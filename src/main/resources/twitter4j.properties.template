@@ -1,0 +1,17 @@
+jsonStoreEnabled=true
+debug=true
+http.userAgent=trident-test
+http.prettyDebug=true
+#http.proxyHost=
+#http.proxyPort=
+#http.connectionTimeout=
+#http.readTimeout=
+#http.retryCount=
+oauth.consumerKey=************************
+oauth.consumerSecret=************************
+oauth.accessToken=************************
+oauth.accessTokenSecret=************************
+
+
+
+
