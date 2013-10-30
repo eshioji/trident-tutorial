@@ -60,6 +60,13 @@ public class Lesson01_BasicPrimitives {
                 .each(new Fields("text"), new ToUpperCase(), new Fields("uppercased_text"))
                 .each(new Fields("text", "uppercased_text"), new DebugFilter());
 
+        // You can prune unnecessary fields using "project"
+        topology
+                .newStream("projection", spout)
+                .each(new Fields("text"), new ToUpperCase(), new Fields("uppercased_text"))
+                .project(new Fields("uppercased_text"))
+                .each(new Fields("uppercased_text"), new DebugFilter());
+
         // Stream can be parallelized with "parallelismHint"
         // Parallelism hint is applied downwards until a partitioning operation (we will see this later).
         // This topology creates 5 spouts and 5 bolts:
