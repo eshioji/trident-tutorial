@@ -5,7 +5,6 @@ import backtype.storm.LocalCluster;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
-import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import storm.trident.TridentTopology;
@@ -24,8 +23,8 @@ import java.util.Map;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class Lesson02_AdvancedPrimitives {
-    private static final Logger log = LoggerFactory.getLogger(Lesson02_AdvancedPrimitives.class);
+public class Lesson02_AdvancedPrimitives1 {
+    private static final Logger log = LoggerFactory.getLogger(Lesson02_AdvancedPrimitives1.class);
 
     public static void main(String[] args) throws Exception {
         Config conf = new Config();
@@ -88,6 +87,7 @@ public class Lesson02_AdvancedPrimitives {
 
         return topology.build();
     }
+
     public static class HasSpain extends BaseFilter {
         @Override
         public boolean isKeep(TridentTuple tuple) {
