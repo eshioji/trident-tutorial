@@ -21,8 +21,8 @@ import java.io.IOException;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class Lesson01_BasicPrimitives {
-    private static final Logger log = LoggerFactory.getLogger(Lesson01_BasicPrimitives.class);
+public class Part01_BasicPrimitives {
+    private static final Logger log = LoggerFactory.getLogger(Part01_BasicPrimitives.class);
 
     public static void main(String[] args) throws Exception {
         // Storm can be run locally for testing purposes

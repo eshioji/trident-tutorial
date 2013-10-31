@@ -23,8 +23,8 @@ import java.util.Map;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class Lesson02_AdvancedPrimitives1 {
-    private static final Logger log = LoggerFactory.getLogger(Lesson02_AdvancedPrimitives1.class);
+public class Part02_AdvancedPrimitives1 {
+    private static final Logger log = LoggerFactory.getLogger(Part02_AdvancedPrimitives1.class);
 
     public static void main(String[] args) throws Exception {
         Config conf = new Config();
