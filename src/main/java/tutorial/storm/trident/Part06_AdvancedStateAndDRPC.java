@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class Lesson06_AdvancedStateAndDRPC {
+public class Part06_AdvancedStateAndDRPC {
     public static void main(String[] args) throws Exception {
         FakeTweetGenerator fakeTweets = new FakeTweetGenerator();
         FeederBatchSpout testSpout = new FeederBatchSpout(ImmutableList.of("id", "text", "actor", "location", "date"));

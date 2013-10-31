@@ -10,21 +10,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
+import storm.trident.operation.Assembly;
+import storm.trident.operation.BaseAggregator;
+import storm.trident.operation.ReducerAggregator;
+import storm.trident.operation.TridentCollector;
 import storm.trident.operation.builtin.Count;
 import storm.trident.operation.builtin.Sum;
+import storm.trident.state.BaseStateUpdater;
+import storm.trident.state.State;
+import storm.trident.state.map.MapState;
 import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
+import storm.trident.tuple.TridentTuple;
 import tutorial.storm.trident.operations.DebugFilter;
 import tutorial.storm.trident.operations.DivideAsDouble;
+import tutorial.storm.trident.operations.StringCounter;
 import tutorial.storm.trident.testutil.FakeTweetsBatchSpout;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class Lesson04_JoinAndMerges {
+public class Part03_AdvancedPrimitives2 {
 
     public static void main(String[] args) throws Exception {
         Config conf = new Config();
@@ -44,20 +55,30 @@ public class Lesson04_JoinAndMerges {
 
         TridentTopology topology = new TridentTopology();
 
-        Stream cityAndAge =
-                topology
-                        .newStream("city_and_age", spout);
-
-        Stream fakeTweets =
-                topology
-                        .newStream("fake_tweets", new FakeTweetsBatchSpout());
-
+        // What if we want more than one aggregation? For that, we can use "chained" aggregations.
+        // Note how we calculate count and sum.
+        // The aggregated values can then be processed further, in this case into mean
         topology
-                .join(fakeTweets,new Fields("actor"), cityAndAge, new Fields("name"), new Fields("text"))
-                .each(new Fields("text"), new DebugFilter())
+                .newStream("aggregation", spout)
+                .groupBy(new Fields("city"))
+                .chainedAgg()
+                .aggregate(new Count(), new Fields("count"))
+                .aggregate(new Fields("age"), new Sum(), new Fields("age_sum"))
+                .chainEnd()
+                .each(new Fields("age_sum", "count"), new DivideAsDouble(), new Fields("mean_age"))
+                .each(new Fields("city", "mean_age"), new DebugFilter())
         ;
 
-        return topology.build();
+        // What if we want to persist results of an aggregation, but want to further process these
+        // results? You can use "newValuesStream" for that
+        topology
+                .newStream("further",spout)
+                .groupBy(new Fields("city"))
+                .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
+                .newValuesStream()
+                .each(new Fields("city", "count"), new DebugFilter());
 
+        return topology.build();
     }
+
 }
