@@ -14,7 +14,11 @@ import storm.kafka.StringScheme;
 import storm.kafka.trident.TransactionalTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
 import storm.trident.TridentTopology;
+import storm.trident.operation.builtin.Count;
+import storm.trident.operation.builtin.Debug;
+import storm.trident.operation.builtin.MapGet;
 import storm.trident.testing.FeederBatchSpout;
+import storm.trident.testing.MemoryMapState;
 import tutorial.storm.trident.operations.DebugFilter;
 
 import java.io.IOException;
@@ -32,17 +36,17 @@ public class Skeleton {
         topology.newStream("tweets", spout)
                 .each(new Fields("str"), new DebugFilter());
 
-//        TridentState countState =
-//        topology
-//                .newStream("spout", spout)
-//                .each(new Fields("actor"), new DebugFilter())
-//                .groupBy(new Fields("actor"))
-//                .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
-//        ;
-//
-//        topology
-//                .newDRPCStream("actor_count", drpc)
-//                .stateQuery(countState, new Fields("args"), new MapGet(), new Fields("count"));
+        TridentState countState =
+        topology
+                .newStream("spout", spout)
+                .each(new Fields("actor"), new DebugFilter())
+                .groupBy(new Fields("actor"))
+                .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
+        ;
+
+        topology
+                .newDRPCStream("actor_count", drpc)
+                .stateQuery(countState, new Fields("args"), new MapGet(), new Fields("count"));
 
         return topology.build();
     }
@@ -57,9 +61,9 @@ public class Skeleton {
 
         LocalDRPC drpc = new LocalDRPC();
         LocalCluster cluster = new LocalCluster();
-//        FeederBatchSpout spout = new FeederBatchSpout(ImmutableList.of("actor"));
+        FeederBatchSpout spout = new FeederBatchSpout(ImmutableList.of("actor"));
 
-        cluster.submitTopology("hackaton", conf, buildTopology(drpc, tweetSpout));
+        cluster.submitTopology("hackaton", conf, buildTopology(drpc,spout));
 
 //        spout.feed(new Values(ImmutableList.of("rose")));
 //        spout.feed(new Values(ImmutableList.of("rose")));
