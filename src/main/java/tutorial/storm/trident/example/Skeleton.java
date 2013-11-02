@@ -1,4 +1,4 @@
-package tutorial.storm.trident;
+package tutorial.storm.trident.example;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
