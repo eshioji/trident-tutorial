@@ -42,4 +42,16 @@ public class Content {
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
+
+    @Override
+    public String toString() {
+        return "Content{" +
+                "contentType='" + contentType + '\'' +
+                ", contentName='" + contentName + '\'' +
+                '}';
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
 }
