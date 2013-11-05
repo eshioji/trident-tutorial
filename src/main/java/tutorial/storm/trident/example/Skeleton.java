@@ -6,47 +6,59 @@ import backtype.storm.LocalDRPC;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
+import backtype.storm.tuple.Values;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import storm.kafka.KafkaConfig;
-import storm.kafka.KafkaSpout;
 import storm.kafka.StringScheme;
 import storm.kafka.trident.TransactionalTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
+import storm.trident.TridentState;
 import storm.trident.TridentTopology;
 import storm.trident.operation.builtin.Count;
-import storm.trident.operation.builtin.Debug;
+import storm.trident.operation.builtin.FirstN;
 import storm.trident.operation.builtin.MapGet;
+import storm.trident.operation.builtin.TupleCollectionGet;
 import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
 import tutorial.storm.trident.operations.DebugFilter;
+import tutorial.storm.trident.operations.ParseTweet;
+import tutorial.storm.trident.operations.Split;
+import tutorial.storm.trident.testutil.SampleTweet;
 
 import java.io.IOException;
 
 /**
- * Use this skeleton for starting your own topology that uses the Fake tweets generator as data source.
- *
- * @author pere
+ * @author Enno Shioji (enno.shioji@peerindex.com)
  */
 public class Skeleton {
 
     public static StormTopology buildTopology(LocalDRPC drpc, TransactionalTridentKafkaSpout spout) throws IOException {
 
         TridentTopology topology = new TridentTopology();
-        topology.newStream("tweets", spout)
-                .each(new Fields("str"), new DebugFilter());
-
-        TridentState countState =
+        TridentState count =
         topology
-                .newStream("spout", spout)
-                .each(new Fields("actor"), new DebugFilter())
-                .groupBy(new Fields("actor"))
+                .newStream("tweets", spout)
+                .each(new Fields("str"), new ParseTweet(), new Fields("text", "content", "user"))
+                .project(new Fields("content", "user"))
+                .each(new Fields("content"), new OnlyHashtags())
+                .each(new Fields("user"), new OnlyEnglish())
+                .each(new Fields("content", "user"), new Extract1(), new Fields("followerClass", "contentName"))
+                .groupBy(new Fields("followerClass", "contentName"))
                 .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
         ;
 
+        count
+                .newValuesStream()
+                .each(new Fields("count"), new DebugFilter());
+
+
         topology
-                .newDRPCStream("actor_count", drpc)
-                .stateQuery(countState, new Fields("args"), new MapGet(), new Fields("count"));
+                .newDRPCStream("hashtag_count", drpc)
+                .stateQuery(count, new TupleCollectionGet(), new Fields("followerClass", "contentName"))
+                .stateQuery(count, new Fields("followerClass", "contentName"), new MapGet(), new Fields("count"))
+                .groupBy(new Fields("followerClass"))
+        ;
 
         return topology.build();
     }
@@ -61,9 +73,14 @@ public class Skeleton {
 
         LocalDRPC drpc = new LocalDRPC();
         LocalCluster cluster = new LocalCluster();
-        FeederBatchSpout spout = new FeederBatchSpout(ImmutableList.of("actor"));
+//        FeederBatchSpout spout = new FeederBatchSpout(ImmutableList.of("str"));
+//
+//        SampleTweet sampleTweet = new SampleTweet();
+//
+//
+//        spout.feed(ImmutableList.of(new Values()));
 
-        cluster.submitTopology("hackaton", conf, buildTopology(drpc,spout));
+        cluster.submitTopology("hackaton", conf, buildTopology(drpc,tweetSpout));
 
 //        spout.feed(new Values(ImmutableList.of("rose")));
 //        spout.feed(new Values(ImmutableList.of("rose")));
@@ -78,8 +95,10 @@ public class Skeleton {
 //        spout.feed(new Values(ImmutableList.of("steve")));
 //
 //
-//        System.out.println(drpc.execute("actor_count","rose"));
-
+        while(!Thread.currentThread().isInterrupted()){
+            Thread.sleep(4000);
+            System.out.println(drpc.execute("hashtag_count",""));
+        }
     }
 
     private static TransactionalTridentKafkaSpout tweetSpout(String testKafkaBrokerHost) {
