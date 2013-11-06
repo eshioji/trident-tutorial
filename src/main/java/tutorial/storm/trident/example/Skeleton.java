@@ -33,7 +33,7 @@ import java.io.IOException;
  */
 public class Skeleton {
 
-    public static StormTopology buildTopology(LocalDRPC drpc, TransactionalTridentKafkaSpout spout) throws IOException {
+    public static StormTopology buildTopology(LocalDRPC drpc, FeederBatchSpout spout) throws IOException {
 
         TridentTopology topology = new TridentTopology();
         TridentState count =
@@ -67,20 +67,17 @@ public class Skeleton {
         Preconditions.checkArgument(args.length == 1, "Please specify the test kafka broker host:port");
         String testKafkaBrokerHost = args[0];
 
-        TransactionalTridentKafkaSpout tweetSpout = tweetSpout(testKafkaBrokerHost);
+//        TransactionalTridentKafkaSpout tweetSpout = tweetSpout(testKafkaBrokerHost);
 
         Config conf = new Config();
 
         LocalDRPC drpc = new LocalDRPC();
         LocalCluster cluster = new LocalCluster();
-//        FeederBatchSpout spout = new FeederBatchSpout(ImmutableList.of("str"));
-//
-//        SampleTweet sampleTweet = new SampleTweet();
-//
-//
-//        spout.feed(ImmutableList.of(new Values()));
+        FeederBatchSpout feederSpout = new FeederBatchSpout(ImmutableList.of("str"));
 
-        cluster.submitTopology("hackaton", conf, buildTopology(drpc,tweetSpout));
+        SampleTweet sampleTweet = new SampleTweet();
+
+        cluster.submitTopology("hackaton", conf, buildTopology(drpc,feederSpout));
 
 //        spout.feed(new Values(ImmutableList.of("rose")));
 //        spout.feed(new Values(ImmutableList.of("rose")));
@@ -96,8 +93,9 @@ public class Skeleton {
 //
 //
         while(!Thread.currentThread().isInterrupted()){
-            Thread.sleep(4000);
+            Thread.sleep(500);
             System.out.println(drpc.execute("hashtag_count",""));
+            feederSpout.feed(ImmutableList.of(new Values(sampleTweet.sampleTweet())));
         }
     }
 
