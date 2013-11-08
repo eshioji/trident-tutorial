@@ -70,7 +70,7 @@ public class Part01_BasicPrimitives {
         // Stream can be parallelized with "parallelismHint"
         // Parallelism hint is applied downwards until a partitioning operation (we will see this later).
         // This topology creates 5 spouts and 5 bolts:
-        // Let's debug that with TridentOperationContext . partitionIndex !
+        // Let's debug that with TridentOperationContext.partitionIndex !
         topology
                 .newStream("parallel", spout)
                 .each(new Fields("actor"), new RegexFilter("pere"))
@@ -87,6 +87,7 @@ public class Part01_BasicPrimitives {
                 .each(new Fields("actor", "count"),new DebugFilter())
         ;
 
+        // In order ot aggregate across batches, we need persistentAggregate.
         // This example is incrementing a count in the DB, using the result of these micro batch aggregations
         // (here we are simply using a hash map for the "database")
         topology
