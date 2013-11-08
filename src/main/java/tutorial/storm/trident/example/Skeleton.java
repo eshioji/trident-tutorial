@@ -23,7 +23,6 @@ import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
 import tutorial.storm.trident.operations.DebugFilter;
 import tutorial.storm.trident.operations.ParseTweet;
-import tutorial.storm.trident.operations.Split;
 import tutorial.storm.trident.testutil.SampleTweet;
 
 import java.io.IOException;
@@ -43,14 +42,10 @@ public class Skeleton {
                 .project(new Fields("content", "user"))
                 .each(new Fields("content"), new OnlyHashtags())
                 .each(new Fields("user"), new OnlyEnglish())
-                .each(new Fields("content", "user"), new Extract1(), new Fields("followerClass", "contentName"))
+                .each(new Fields("content", "user"), new ExtractFollowerClassAndContentName(), new Fields("followerClass", "contentName"))
                 .groupBy(new Fields("followerClass", "contentName"))
                 .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
         ;
-
-        count
-                .newValuesStream()
-                .each(new Fields("count"), new DebugFilter());
 
 
         topology

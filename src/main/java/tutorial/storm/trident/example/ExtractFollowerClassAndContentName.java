@@ -17,7 +17,7 @@ import twitter4j.User;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class Extract1 extends BaseFunction {
+public class ExtractFollowerClassAndContentName extends BaseFunction {
     private RangeMap<Integer, String> discretizationMap;
     @Override
     public void execute(TridentTuple tuple, TridentCollector collector) {
