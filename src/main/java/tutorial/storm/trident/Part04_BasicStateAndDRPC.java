@@ -23,8 +23,8 @@ import java.io.IOException;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class Part05_BasicStateAndDRPC {
-    private static final Logger log = LoggerFactory.getLogger(Part05_BasicStateAndDRPC.class);
+public class Part04_BasicStateAndDRPC {
+    private static final Logger log = LoggerFactory.getLogger(Part04_BasicStateAndDRPC.class);
 
     public static void main(String[] args) throws Exception{
         FakeTweetGenerator fakeTweets = new FakeTweetGenerator();
