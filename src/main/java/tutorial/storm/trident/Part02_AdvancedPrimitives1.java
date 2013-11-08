@@ -53,9 +53,10 @@ public class Part02_AdvancedPrimitives1 {
                 .parallelismHint(3)
         ;
 
-        // In the former, a given location can be aggregated anywhere. In the later, all input with a given location
-        // are routed to the same instance of aggregation
-        // This is potentially more efficient, but note if your input is skewed, the workload can become skewed, too
+        // If no partitioning is specified (as in the former), a given location can be aggregated in different
+        // aggregators. In the later, all input with a given location are routed to the same instance of aggregation.
+        // This means that, more summarization can be done in the later, which would make subsequent processing more
+        // efficient. However, note that if your input is skewed, the workload can become skewed, too
 
         // Here is an example how to deal with such skews
         topology
@@ -71,7 +72,9 @@ public class Part02_AdvancedPrimitives1 {
                 .parallelismHint(3)
         ;
 
-        // Without the "shuffle" partitioning, only a single partition will be executing the "TimesTen" function
+        // Without the "shuffle" partitioning, only a single partition will be executing the "TimesTen" function,
+        // i.e. the workload will not be distributed. With the "shuffle" partitioning, the skew is corrected and
+        // the workload will be distributed again.
         // Note the need for two parallelismHints, as parallelismHints apply downwards up until a partitioning operation
 
         // There are several other partitioning operations.
@@ -83,6 +86,8 @@ public class Part02_AdvancedPrimitives1 {
                 .each(new Fields("actor"), new DebugFilter())
                 .parallelismHint(3)
         ;
+
+        // 
 
 
         return topology.build();
