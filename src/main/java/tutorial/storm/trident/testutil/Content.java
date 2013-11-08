@@ -43,6 +43,30 @@ public class Content {
         this.contentType = contentType;
     }
 
+    public long getTweetId() {
+        return tweetId;
+    }
+
+    public void setTweetId(long tweetId) {
+        this.tweetId = tweetId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getCreatedAtMs() {
+        return createdAtMs;
+    }
+
+    public void setCreatedAtMs(long createdAtMs) {
+        this.createdAtMs = createdAtMs;
+    }
+
     @Override
     public String toString() {
         return "Content{" +
