@@ -1,4 +1,4 @@
-package tutorial.storm.trident.example;
+package tutorial.storm.trident.operations;
 
 import backtype.storm.tuple.Values;
 import com.google.common.collect.ImmutableRangeMap;
