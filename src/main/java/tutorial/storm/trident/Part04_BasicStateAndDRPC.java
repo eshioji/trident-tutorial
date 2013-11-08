@@ -35,7 +35,7 @@ public class Part04_BasicStateAndDRPC {
         LocalDRPC drpc = new LocalDRPC();
         cluster.submitTopology("state_drpc", conf, basicStateAndDRPC(drpc, testSpout));
 
-        // You can use FeederBatchSpout to feed know values to the topology. Very useful for tests.
+        // You can use FeederBatchSpout to feed known values to the topology. Very useful for tests.
         testSpout.feed(fakeTweets.getNextTweetTuples("ted"));
         testSpout.feed(fakeTweets.getNextTweetTuples("ted"));
         testSpout.feed(fakeTweets.getNextTweetTuples("mary"));
