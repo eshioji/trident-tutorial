@@ -34,12 +34,12 @@ public class ExtractFollowerClassAndContentName extends BaseFunction {
     private RangeMap<Integer, String> getDiscretizationMap() {
         ImmutableRangeMap.Builder<Integer,String> b = ImmutableRangeMap.builder();
         b.put(  Range.lessThan(10),                                     "< 10");
-        b.put(Range.closedOpen(10,                 100),                "< 100");
-        b.put(Range.closedOpen(100,               1000),                "< 1K");
-        b.put(Range.closedOpen(1000,         10 * 1000),                "< 10K");
-        b.put(Range.closedOpen(10 * 1000,   100 * 1000),                "< 100K");
-        b.put(Range.closedOpen(100 * 1000, 1000 * 1000),                "< 1M");
-        b.put(Range.greaterThan(1000 * 1000),                           "< 1M");
+        b.put(Range.closedOpen(10,                 100),                "10-100");
+        b.put(Range.closedOpen(100,               1000),                "100-1K");
+        b.put(Range.closedOpen(1000,         10 * 1000),                "1K-10K");
+        b.put(Range.closedOpen(10 * 1000,   100 * 1000),                "10K-100K");
+        b.put(Range.closedOpen(100 * 1000, 1000 * 1000),                "100K-1M");
+        b.put(Range.greaterThan(1000 * 1000),                           "> 1M");
         return b.build();
     }
 }
