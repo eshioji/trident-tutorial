@@ -58,6 +58,7 @@ public class Skeleton {
                 .stateQuery(count, new TupleCollectionGet(), new Fields("followerClass", "contentName"))
                 .stateQuery(count, new Fields("followerClass", "contentName"), new MapGet(), new Fields("count"))
                 .groupBy(new Fields("followerClass"))
+                .aggregate(new Fields("contentName", "count"), new FirstN.FirstNSortedAgg(1,"count", true), new Fields("contentName", "count"))
         ;
 
         return topology.build();
