@@ -6,3 +6,4 @@
 *.ear
 src/main/java/storm/example
 sample_tweet.json
+*.properties
