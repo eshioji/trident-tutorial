@@ -47,7 +47,7 @@
         <dependency>
             <groupId>storm</groupId>
             <artifactId>storm</artifactId>
-            <version>0.9.0-wip21</version>
+            <version>0.9.0-rc2</version>
             <!-- keep storm out of the jar-with-dependencies -->
             <!--<scope>provided</scope>-->
         </dependency>
@@ -90,12 +90,12 @@
         <dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-core</artifactId>
-            <version>3.0.4</version>
+            <version>3.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-stream</artifactId>
-            <version>3.0.4</version>
+            <version>3.0.5</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
