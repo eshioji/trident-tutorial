@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head> 
+    <title>Strataconf London 2013 - Storm Trident Tutorial</title>
+    <meta name="copyright" content="http://creativecommons.org/licenses/by/3.0/"/>
+    <script src="Tools/Slidy/slidy.js" charset="utf-8" type="text/javascript"></script> 
+    <link rel="stylesheet" type="text/css" media="screen, projection, print" href="Tools/Slidy/peerindex.css" /> 
+</head>
+<body>
+<div class="background">
+    <img id="head-logo" title="logo" alt="PeerIndex" src="images/logo.png" />
+</div>
+
+<!-- Cover Page-->
+<div class="slide cover"> 
+    <a href="http://www.peerindex.com/">
+    <img src="images/influence-graph.png" alt="Influence Graph" class="cover" />
+    </a>
+    <h1>Scalable Real-time Analytics with Storm (Trident)</h1>
+    <p><a href="mailto:es@peerindex.com">Enno Shioji</a></p>
+    <p><a href="mailto:dp@peerindex.com">Davide Palmisano</a></p>
+    <p><a href="mailto:mt@peerindex.com">Mischa Tuffield</a></p>
+    <p>2013-11-13 : <a href="http://strataconf.com/strataeu2013/public/schedule/detail/31206">Strata Conf 2013</p>
+    <p>Slides : <a href="http://mmt.me.uk/slides/cam20101118/">http://github.com/....</a></p>
+</div> 
+
+<!-- Overview -->
+<div class="slide">
+    <h1>Presentation Overview</h1>
+    <ul>
+        <li>What is Storm?</li>
+        <li>Motivations</li>
+        <li>Core Concepts</li>
+        <li>Architecture</li>
+        <li>Low-level API</li>
+        <li>Trident</li>
+        <li>Your First Trident Topology</li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Getting Started</h2>
+    <ul>
+        <li>Use this hashtag twitter #stratastorm</li>
+        <li>Install JAVA</li>
+        <li>Install MAVEN</li>
+        <li>Grab one of us or use twitter if you need help!</li>
+        <li>Clone the tutorial's repo <a href="https://github.com/eshioji/trident-tutorial">https://github.com/eshioji/trident-tutorial</a></li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>What is Storm?</h2>
+
+    <p><em>"Storm is to Real-time what Hadoop is to Batch processing"</em></p>
+    <ul>
+        <li>Realtime Stream Processing Framework</li>
+        <li>Distributed</li>
+        <li>Fault Tolerant</li>
+        <li>Open-sourced (<a href="http://incubator.apache.org/projects/storm.html">Apache Incubator Project)</a></li>
+        <li>JVM based</li>
+        <li>Multi language</li>
+        <li>Transactional</li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Motivations - Why use Storm?</h2>
+    <p>Traditionally writing scalable stream based processing suffered from 3 major downfalls</p>
+    <ul>
+        <li><b>Tedious:</b> You spend most of your development time configuring where to send messages, deploying workers, and deploying intermediate queues. The realtime processing logic that you care about corresponds to a relatively small percentage of your codebase.</li>
+        <li><b>Brittle:</b> There's little fault-tolerance. You're responsible for keeping each worker and queue up.
+        <li><b>Painful to scale:</b> When the message throughput get too high for a single worker or queue, you need to partition how the data is spread around. You need to reconfigure the other workers to know the new locations to send messages. This introduces moving parts and new pieces that can fail.</li>
+    </ul>
+
+    <p style="float:right;"><a href="https://github.com/nathanmarz/storm/wiki/Rationale">source: Storm Wiki Rationale</a></p>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Further Motivations</h2>
+    <ul>
+        <li>More and more data is being delivered as streams in real-time
+            <ul>
+                <li>Twitter</li>
+                <li>Facebook</li>
+                <li>Disqus</li>
+                <li>Tumblr</li>
+            </ul>    
+        </li>
+        <li>Storm allows
+            <ul>
+                <li>Scalable Fault Tolerant Stream Processing</li>
+                <li>Distributed RPC</li>
+                <li><em>"Building on the shoulders of Giants"</em></li>
+            </ul>    
+        </li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Use Cases</h2>
+    <ul>
+        <li><b>Stream processing</b>: Storm was built to process streams of new data whilst updating databases in real-time</li>
+        <li><b>Continuous computation</b>: Storm can do continuous queries whilst being able to stream the results in real-time</li>
+        <li><b>Distributed RPC</b>: Storm can parallelise the computation of intense functions on the fly</li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Core Concepts</h2>
+    <p><img style="float:right" src="images/topology.png" alt="Anatomy of a Storm Project"/></p>
+    <br/>
+    <ul>
+        <li><b>Topology</b>: Analogous to a Hadoop Job. A topology is a graph of spouts and bolts that are connected with stream groupings. </li>
+        <li><b>Stream</b>: The stream is the core abstraction in Storm. A stream is an unbounded sequence of <b>tuples</b>.</li>
+        <li><b>Spout</b>: A spout is a source of streams in a topology.</li>
+        <li><b>Bolt</b>: All processing in topologies is done in bolts. Bolts can do anything from filtering, functions, aggregations, joins, talking to databases, and more. </li>
+        <li><b>Stream Grouping</b>: Part of defining a topology is specifying for each bolt which streams it should receive as input. A stream grouping defines how that stream should be partitioned among the bolt's tasks. </li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Architecture</h2>
+    <p><img style="float:right" src="images/zookeeper.png" alt="Storm Architecture"/></p>
+    <p>Fault-tolerant &amp; scalable architecture is achieved using:</p>
+    <ul>    
+        <li><b>Nimbus</b>
+            <ul>
+                <li>Distributes code within the cluster</li>
+                <li>Assigns tasks to the various workers</li>
+                <li>Monitors the cluster for failures</li>
+                <li>Fail-fast</li>
+                <li>Similar to Hadoop's "JobTracker".</li>
+            </ul>
+        </li>
+        <li><b>Zookeeper</b>
+            <ul>
+                <li>Is a service for maintaining configuration information, naming, providing distributed synchronization, and providing group services.</li>
+                <li>All state in zookeeper</li>
+            </ul>
+        </li>
+        <li><b>Supervisor</b>
+            <ul>
+                <li>Worker node daemon</li>    
+                <li>Starts and stops worker processes as per instructions from Nimbus</li>    
+                <li>Fail-fast</li>    
+                <li>Similar to Hadoop's "TaskTracker".</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Architectural Gotchas</h2>
+
+    <ul>
+        <li>Transactional Processing
+            <ul>
+                <li>In order to exploit Trident's transactional capabilities one needs to employ a queueing system that supports transactions. The most used aforementioned type of system is the Apache's Kafka.</li>
+            </ul>
+        </li>
+        <li>Persistant State
+            <ul>
+                <li>Can we used to store intermediate results or the final results of your computation. </li>
+                <li>People tend to use KeyValue stores such as Memcache, Redis, etc </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Low-level API</h2>
+    <ul>
+        <li>Similar to the Hadoop API</li>
+        <li>Trident is an abstraction ontop of the Low-Level API</li>
+        <li>For more details have a look at the <a href="https://github.com/nathanmarz/storm-starter/blob/master/src/jvm/storm/starter/WordCountTopology.java">WordCountTopology</a> in the <a href="https://github.com/nathanmarz/storm-starter/">Storm Starter Project</a></li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Trident</h2>
+    <ul>
+        <li>High-level abstraction for dealing with streams</li>
+        <li>What Pig, Hive, or Cascading are to Hadoop</li>
+        <li>Compiles down to the Low-Level Storm API (like Pig, Hive, etc)</li>
+        <li>Transactions</li>
+        <li>Concepts
+            <ul>
+                <li>Grouping</li>
+                <li>Filters</li>
+                <li>Functions</li>
+                <li>Aggregations</li>
+                <li>Joins</li>
+                <li>...</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Distributed RPC</h2>
+    <p><img style="float:right" src="images/drpc-workflow.png" alt="DRPC"/></p>
+    <br/>
+    <ul>
+        <li>Coordinates receiving an RPC request with the cluster.</li>
+        <li>From the client's POV a distributed RPC call looks just like a regular RPC call.</li>
+        <li>Can be used to issue adhoc queries to running topologies</li>
+    </ul>
+</div>
+
+
+<!--slide-->
+<div class="slide">
+    <h2>Now on to the Actual Tutorial :)</h2>
+    <ul>
+        <li><a href="https://github.com/eshioji/trident-tutorial">https://github.com/eshioji/trident-tutorial</a></li>
+    </ul>
+</div>
+
+</body>
+</html>
