@@ -4,7 +4,6 @@ import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.jvm.hotspot.jdi.ShortValueImpl;
 
 
 /**
