@@ -21,7 +21,10 @@ import storm.trident.operation.builtin.MapGet;
 import storm.trident.operation.builtin.TupleCollectionGet;
 import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
-import tutorial.storm.trident.operations.*;
+import tutorial.storm.trident.operations.ExtractFollowerClassAndContentName;
+import tutorial.storm.trident.operations.OnlyEnglish;
+import tutorial.storm.trident.operations.OnlyHashtags;
+import tutorial.storm.trident.operations.ParseTweet;
 import tutorial.storm.trident.testutil.SampleTweet;
 
 import java.io.IOException;
