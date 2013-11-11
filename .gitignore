@@ -5,7 +5,10 @@
 *.war
 *.ear
 src/main/java/storm/example
+
+# Twitter Related Conf
 sample_tweet.json
+src/main/resources/twitter4j.properties
 
 #ignore Intellij files
 .idea/
@@ -13,3 +16,4 @@ target/
 *.iml
 *.ipr
 *.iws
+
