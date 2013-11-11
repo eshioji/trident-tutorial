@@ -6,3 +6,10 @@
 *.ear
 src/main/java/storm/example
 sample_tweet.json
+
+#ignore Intellij files
+.idea/
+target/
+*.iml
+*.ipr
+*.iws
