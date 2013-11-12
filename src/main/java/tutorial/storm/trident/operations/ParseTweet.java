@@ -22,8 +22,6 @@ public class ParseTweet extends BaseFunction {
 
     private ContentExtracter extracter;
 
-
-
     @Override
     public void execute(TridentTuple tuple, TridentCollector collector) {
         if(extracter == null) extracter = new ContentExtracter();
@@ -37,7 +35,7 @@ public class ParseTweet extends BaseFunction {
         }
     }
 
-    Status parse(String rawJson){
+    private Status parse(String rawJson){
         try {
             Status parsed = DataObjectFactory.createStatus(rawJson);
             return parsed;
