@@ -29,7 +29,7 @@ import java.io.IOException;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class TopHashtagFollowerCountGrouping {
+public class GlobalTop20Hashtag {
 
     public static StormTopology buildTopology(LocalDRPC drpc, TransactionalTridentKafkaSpout spout) throws IOException {
 
@@ -48,11 +48,10 @@ public class TopHashtagFollowerCountGrouping {
 
 
         topology
-                .newDRPCStream("hashtag_count", drpc)
+                .newDRPCStream("top_hashtags", drpc)
                 .stateQuery(count, new TupleCollectionGet(), new Fields("followerClass", "contentName"))
                 .stateQuery(count, new Fields("followerClass", "contentName"), new MapGet(), new Fields("count"))
-                .groupBy(new Fields("followerClass"))
-                .aggregate(new Fields("contentName", "count"), new FirstN.FirstNSortedAgg(1,"count", true), new Fields("contentName", "count"))
+                .aggregate(new Fields("contentName", "count"), new FirstN.FirstNSortedAgg(5,"count", true), new Fields("contentName", "count"))
         ;
 
         return topology.build();
@@ -77,7 +76,7 @@ public class TopHashtagFollowerCountGrouping {
 
         while(!Thread.currentThread().isInterrupted()){
             Thread.sleep(500);
-            System.out.println(drpc.execute("hashtag_count",""));
+            System.out.println("The trending hashtags right now: "+drpc.execute("top_hashtags",""));
         }
     }
 
