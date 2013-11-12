@@ -9,14 +9,14 @@
     <link rel="stylesheet" type="text/css" media="screen, projection, print" href="Tools/Slidy/peerindex.css" /> 
 </head>
 <body>
-    <div style="float:right">
-    <img title="logo" alt="PeerIndex" src="images/logo.png" />
+<div style="float:right">
+    <img title="logo" alt="Strata Conf London" src="images/logo.png" />
 </div>
 
 <!-- Cover Page-->
 <div class="slide cover"> 
-    <a href="http://www.peerindex.com/">
-    <img src="images/influence-graph.png" alt="Influence Graph" class="cover" />
+    <a href="http://strataconf.com/strataeu2013">
+    <img src="images/strata_og200x200.gif" alt="Strata Conf London" class="cover" />
     </a>
     <h1>Scalable Real-time Analytics with Storm (Trident)</h1>
     <p><a href="mailto:es@peerindex.com">Enno Shioji</a> <a href="https://twitter.com/eshioji">@eshioji</a></p>
@@ -168,9 +168,25 @@
 
     <p><img style="float:right" src="images/Storm_multi-node-cluster_overview.png" alt="Storm Multinode cluster"/></p>
 
+    <ul>
+        <li>Illustration of what the minimal storm cluster looks like 
+        <ul>
+            <li>Zookeeper running on machines</li>
+            <li>One supervisor running for worker node</li>
+            <li>One instance of Nimbus and the Storm UI</li>
+        </ul>
+        </li>
+
+    </ul>
     <div style="clear:both"></div>
 
     <p style="float:right;"><a href="http://www.michael-noll.com/blog/uploads/Storm_multi-node-cluster_overview.png">source: Michael Noll</a></p>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h2>Storm Cluster UI</h2>
+    <p><img src="images/storm_ui.png" alt="Storm Cluster UI"/></p>
 </div>
 
 <!--slide-->
