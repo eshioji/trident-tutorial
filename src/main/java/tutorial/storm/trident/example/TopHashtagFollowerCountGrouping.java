@@ -30,7 +30,7 @@ import java.io.IOException;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class TopHashtagAnalysis {
+public class TopHashtagFollowerCountGrouping {
 
     public static StormTopology buildTopology(LocalDRPC drpc, TransactionalTridentKafkaSpout spout) throws IOException {
 
