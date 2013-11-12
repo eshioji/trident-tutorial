@@ -27,9 +27,9 @@ import tutorial.storm.trident.operations.ParseTweet;
 import java.io.IOException;
 
 /**
- * @author Enno Shioji (enno.shioji@peerindex.com)
+ *
  */
-public class GlobalTop20Hashtag {
+public class GlobalTop20Hashtags {
 
     public static StormTopology buildTopology(LocalDRPC drpc, TransactionalTridentKafkaSpout spout) throws IOException {
 

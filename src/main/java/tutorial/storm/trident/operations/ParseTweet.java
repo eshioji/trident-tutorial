@@ -31,7 +31,7 @@ public class ParseTweet extends BaseFunction {
         User user = parsed.getUser();
 
         for (Content content : extracter.extract(parsed)) {
-            collector.emit(new Values(parsed.getText(), content, user));
+            collector.emit(new Values(parsed, content, user));
         }
     }
 
