@@ -19,17 +19,17 @@ Step by step instruction to run the tutorial
  2. Clone this repo (if you don't have git, you can also download the source as zip file and extract it)
  3. Go to the project folder and execute  
  
-    
+`   
     mvn clean package
-
+`
     
  4. Run  
 
-    
+`    
     java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
         tutorial.storm.trident.example.TopHashtagAnalysis \
         ec2-54-216-194-46.eu-west-1.compute.amazonaws.com:12000
-
+`
     
 
     
