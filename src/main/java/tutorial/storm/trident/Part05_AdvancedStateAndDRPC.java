@@ -17,8 +17,8 @@ import storm.trident.state.State;
 import storm.trident.state.StateFactory;
 import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
-import tutorial.storm.trident.operations.DebugFilter;
 import tutorial.storm.trident.operations.DivideAsDouble;
+import tutorial.storm.trident.operations.Print;
 import tutorial.storm.trident.testutil.FakeTweetGenerator;
 
 import java.util.ArrayList;
@@ -37,16 +37,16 @@ public class Part05_AdvancedStateAndDRPC {
         Config conf = new Config();
         LocalCluster cluster = new LocalCluster();
         LocalDRPC drpc = new LocalDRPC();
-            cluster.submitTopology("external_state_drpc", conf, externalState(drpc, testSpout));
+        cluster.submitTopology("external_state_drpc", conf, externalState(drpc, testSpout));
 
-            // You can use FeederBatchSpout to feed know values to the topology. Very useful for tests.
-            testSpout.feed(fakeTweets.getNextTweetTuples("ted"));
-            testSpout.feed(fakeTweets.getNextTweetTuples("ted"));
-            testSpout.feed(fakeTweets.getNextTweetTuples("mary"));
-            testSpout.feed(fakeTweets.getNextTweetTuples("jason"));
+        // You can use FeederBatchSpout to feed know values to the topology. Very useful for tests.
+        testSpout.feed(fakeTweets.getNextTweetTuples("ted"));
+        testSpout.feed(fakeTweets.getNextTweetTuples("ted"));
+        testSpout.feed(fakeTweets.getNextTweetTuples("mary"));
+        testSpout.feed(fakeTweets.getNextTweetTuples("jason"));
 
-            System.out.println(drpc.execute("age_stats", ""));
-            System.out.println("OK");
+        System.out.println(drpc.execute("age_stats", ""));
+        System.out.println("OK");
     }
 
 
@@ -80,7 +80,7 @@ public class Part05_AdvancedStateAndDRPC {
                 .newDRPCStream("age_stats", drpc)
                 .stateQuery(countState, new TupleCollectionGet(), new Fields("actor", "location"))
                 .stateQuery(nameToAge, new Fields("actor"), new MapGet(), new Fields("age"))
-                .each(new Fields("actor","location","age"), new DebugFilter())
+                .each(new Fields("actor","location","age"), new Print())
                 .groupBy(new Fields("location"))
                 .chainedAgg()
                 .aggregate(new Count(), new Fields("count"))

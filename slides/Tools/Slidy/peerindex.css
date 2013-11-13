@@ -82,19 +82,13 @@ div.background img {
 div.slide + div[class].slide { page-break-before: always;}
 
 div.slide h1 {
-  padding-left: 0.1em;
+  padding-left: 1.2em;
   padding-right: 0;
   padding-top: 0.1em;
-  margin-bottom: 0.8em;
-  margin-top: -0.05em;
-  margin-left: 3em;
-  margin-right: 5em;
-  min-height: 2.3em;
   color: black;
   height: 2.2em;
   font-size: 160%;
   line-height: 1.1em;
-  background: #fff;
 }
 
 div.slide h1 a {

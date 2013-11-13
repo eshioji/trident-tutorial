@@ -67,7 +67,7 @@ public class JoinExample {
          *
          */
         topology.join(hashtags, new Fields("tweetId"), urls, new Fields("tweetId"), new Fields("tweetId", "hashtag", "url"))
-                .each(new Fields("tweetId", "hashtag", "url"), new DebugFilter());
+                .each(new Fields("tweetId", "hashtag", "url"), new Print());
 
         return topology.build();
 

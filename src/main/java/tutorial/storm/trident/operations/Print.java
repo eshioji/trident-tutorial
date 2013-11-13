@@ -10,15 +10,15 @@ import java.util.Map;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class DebugFilter extends BaseFilter {
+public class Print extends BaseFilter {
     private int partitionIndex;
     private int numPartitions;
     private final String name;
 
-    public DebugFilter(){
+    public Print(){
         name = "";
     }
-    public DebugFilter(String name){
+    public Print(String name){
         this.name = name;
     }
 

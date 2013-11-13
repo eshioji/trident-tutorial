@@ -29,7 +29,7 @@ import java.io.IOException;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class TopHashtagAnalysis {
+public class TopHashtagByFollowerClass {
 
     public static StormTopology buildTopology(LocalDRPC drpc, TransactionalTridentKafkaSpout spout) throws IOException {
 
@@ -68,23 +68,35 @@ public class TopHashtagAnalysis {
 
         LocalDRPC drpc = new LocalDRPC();
         LocalCluster cluster = new LocalCluster();
-        // For unit testing
         // FeederBatchSpout feederSpout = new FeederBatchSpout(ImmutableList.of("str"));
+
         // SampleTweet sampleTweet = new SampleTweet();
-        // feederSpout.feed(ImmutableList.of(new Values(sampleTweet.sampleTweet())));
 
-        cluster.submitTopology("hackaton", conf, buildTopology(drpc,tweetSpout));
+        cluster.submitTopology("hackaton", conf, buildTopology(drpc, tweetSpout));
 
+//        spout.feed(new Values(ImmutableList.of("rose")));
+//        spout.feed(new Values(ImmutableList.of("rose")));
+//        spout.feed(new Values(ImmutableList.of("rose")));
+//
+//        spout.feed(new Values(ImmutableList.of("fred")));
+//        spout.feed(new Values(ImmutableList.of("fred")));
+//        spout.feed(new Values(ImmutableList.of("fred")));
+//        spout.feed(new Values(ImmutableList.of("fred")));
+//
+//        spout.feed(new Values(ImmutableList.of("steve")));
+//        spout.feed(new Values(ImmutableList.of("steve")));
+//
+//
         while(!Thread.currentThread().isInterrupted()){
             Thread.sleep(500);
             System.out.println(drpc.execute("hashtag_count",""));
+            // feederSpout.feed(ImmutableList.of(new Values(sampleTweet.sampleTweet())));
         }
     }
 
     private static TransactionalTridentKafkaSpout tweetSpout(String testKafkaBrokerHost) {
-        // For locally starting the kafka broker
-        // TweetIngestor ingestor = new TweetIngestor("/tmp/kafka", "test", 12000);
-        // ingestor.startAndWait();
+//        TweetIngestor ingestor = new TweetIngestor("/tmp/kafka", "test", 12000);
+//        ingestor.startAndWait();
         KafkaConfig.BrokerHosts hosts = TridentKafkaConfig.StaticHosts.fromHostString(ImmutableList.of(testKafkaBrokerHost), 1);
         TridentKafkaConfig config = new TridentKafkaConfig(hosts, "test");
         config.scheme = new SchemeAsMultiScheme(new StringScheme());

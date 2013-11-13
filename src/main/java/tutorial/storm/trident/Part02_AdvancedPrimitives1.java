@@ -12,7 +12,7 @@ import storm.trident.operation.BaseFilter;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.tuple.TridentTuple;
-import tutorial.storm.trident.operations.DebugFilter;
+import tutorial.storm.trident.operations.Print;
 import tutorial.storm.trident.operations.StringCounter;
 import tutorial.storm.trident.testutil.FakeTweetsBatchSpout;
 
@@ -31,6 +31,8 @@ public class Part02_AdvancedPrimitives1 {
 //        conf.put(Config.TOPOLOGY_DEBUG,true);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("advanced_primitives", conf, advancedPrimitives(new FakeTweetsBatchSpout(1000)));
+        Thread.sleep(30000);
+        cluster.shutdown();
     }
 
     private static StormTopology advancedPrimitives(FakeTweetsBatchSpout spout) {
@@ -64,11 +66,11 @@ public class Part02_AdvancedPrimitives1 {
                 .partitionBy(new Fields("location"))
                 .partitionAggregate(new Fields("location"), new StringCounter(), new Fields("count_map"))
                 .each(new Fields("count_map"), new HasSpain())
-                .each(new Fields("count_map"), new DebugFilter("AFTER-HAS-SPAIN"))
+                .each(new Fields("count_map"), new Print("AFTER-HAS-SPAIN"))
                 .parallelismHint(3)
                 .shuffle()
                 .each(new Fields("count_map"), new TimesTen(), new Fields("count_map_times_ten"))
-                .each(new Fields("count_map_times_ten"), new DebugFilter("AFTER-TIMES-TEN"))
+                .each(new Fields("count_map_times_ten"), new Print("AFTER-TIMES-TEN"))
                 .parallelismHint(3)
         ;
 
@@ -83,7 +85,7 @@ public class Part02_AdvancedPrimitives1 {
         topology
                 .newStream("aggregation", spout)
                 .global()
-                .each(new Fields("actor"), new DebugFilter())
+                .each(new Fields("actor"), new Print())
                 .parallelismHint(3)
         ;
 

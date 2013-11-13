@@ -11,8 +11,8 @@ import storm.trident.operation.builtin.Count;
 import storm.trident.operation.builtin.Sum;
 import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
-import tutorial.storm.trident.operations.DebugFilter;
 import tutorial.storm.trident.operations.DivideAsDouble;
+import tutorial.storm.trident.operations.Print;
 
 import java.io.IOException;
 
@@ -33,7 +33,6 @@ public class Part03_AdvancedPrimitives2 {
 
         // You can "hand feed" values to the topology by using this spout
         testSpout.feed(ImmutableList.of(new Values("rose", "Shanghai", 32), new Values("mary", "Shanghai", 51), new Values("pere", "Jakarta", 65), new Values("Tom", "Jakarta", 10)));
-
     }
 
     private static StormTopology advancedPrimitives(FeederBatchSpout spout) throws IOException {
@@ -51,7 +50,7 @@ public class Part03_AdvancedPrimitives2 {
                 .aggregate(new Fields("age"), new Sum(), new Fields("age_sum"))
                 .chainEnd()
                 .each(new Fields("age_sum", "count"), new DivideAsDouble(), new Fields("mean_age"))
-                .each(new Fields("city", "mean_age"), new DebugFilter())
+                .each(new Fields("city", "mean_age"), new Print())
         ;
 
         // What if we want to persist results of an aggregation, but want to further process these
@@ -61,7 +60,7 @@ public class Part03_AdvancedPrimitives2 {
                 .groupBy(new Fields("city"))
                 .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
                 .newValuesStream()
-                .each(new Fields("city", "count"), new DebugFilter());
+                .each(new Fields("city", "count"), new Print());
 
         return topology.build();
     }

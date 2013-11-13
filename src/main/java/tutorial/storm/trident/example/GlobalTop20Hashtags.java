@@ -27,9 +27,9 @@ import tutorial.storm.trident.operations.ParseTweet;
 import java.io.IOException;
 
 /**
- * @author Enno Shioji (enno.shioji@peerindex.com)
+ *
  */
-public class Skeleton {
+public class GlobalTop20Hashtags {
 
     public static StormTopology buildTopology(LocalDRPC drpc, TransactionalTridentKafkaSpout spout) throws IOException {
 
@@ -48,11 +48,10 @@ public class Skeleton {
 
 
         topology
-                .newDRPCStream("hashtag_count", drpc)
+                .newDRPCStream("top_hashtags", drpc)
                 .stateQuery(count, new TupleCollectionGet(), new Fields("followerClass", "contentName"))
                 .stateQuery(count, new Fields("followerClass", "contentName"), new MapGet(), new Fields("count"))
-                .groupBy(new Fields("followerClass"))
-                .aggregate(new Fields("contentName", "count"), new FirstN.FirstNSortedAgg(1,"count", true), new Fields("contentName", "count"))
+                .aggregate(new Fields("contentName", "count"), new FirstN.FirstNSortedAgg(5,"count", true), new Fields("contentName", "count"))
         ;
 
         return topology.build();
@@ -68,35 +67,23 @@ public class Skeleton {
 
         LocalDRPC drpc = new LocalDRPC();
         LocalCluster cluster = new LocalCluster();
+        // For unit testing
         // FeederBatchSpout feederSpout = new FeederBatchSpout(ImmutableList.of("str"));
-
         // SampleTweet sampleTweet = new SampleTweet();
+        // feederSpout.feed(ImmutableList.of(new Values(sampleTweet.sampleTweet())));
 
-        cluster.submitTopology("hackaton", conf, buildTopology(drpc, tweetSpout));
+        cluster.submitTopology("hackaton", conf, buildTopology(drpc,tweetSpout));
 
-//        spout.feed(new Values(ImmutableList.of("rose")));
-//        spout.feed(new Values(ImmutableList.of("rose")));
-//        spout.feed(new Values(ImmutableList.of("rose")));
-//
-//        spout.feed(new Values(ImmutableList.of("fred")));
-//        spout.feed(new Values(ImmutableList.of("fred")));
-//        spout.feed(new Values(ImmutableList.of("fred")));
-//        spout.feed(new Values(ImmutableList.of("fred")));
-//
-//        spout.feed(new Values(ImmutableList.of("steve")));
-//        spout.feed(new Values(ImmutableList.of("steve")));
-//
-//
         while(!Thread.currentThread().isInterrupted()){
             Thread.sleep(500);
-            System.out.println(drpc.execute("hashtag_count",""));
-            // feederSpout.feed(ImmutableList.of(new Values(sampleTweet.sampleTweet())));
+            System.out.println("The trending hashtags right now: "+drpc.execute("top_hashtags",""));
         }
     }
 
     private static TransactionalTridentKafkaSpout tweetSpout(String testKafkaBrokerHost) {
-//        TweetIngestor ingestor = new TweetIngestor("/tmp/kafka", "test", 12000);
-//        ingestor.startAndWait();
+        // For locally starting the kafka broker
+        // TweetIngestor ingestor = new TweetIngestor("/tmp/kafka", "test", 12000);
+        // ingestor.startAndWait();
         KafkaConfig.BrokerHosts hosts = TridentKafkaConfig.StaticHosts.fromHostString(ImmutableList.of(testKafkaBrokerHost), 1);
         TridentKafkaConfig config = new TridentKafkaConfig(hosts, "test");
         config.scheme = new SchemeAsMultiScheme(new StringScheme());

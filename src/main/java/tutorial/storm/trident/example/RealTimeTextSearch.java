@@ -17,8 +17,8 @@ import storm.trident.TridentTopology;
 import tutorial.storm.trident.example.elasticsearch.ElasticSearchStateFactory;
 import tutorial.storm.trident.example.elasticsearch.ElasticSearchStateUpdater;
 import tutorial.storm.trident.example.elasticsearch.TweetQuery;
-import tutorial.storm.trident.operations.DebugFilter;
 import tutorial.storm.trident.operations.ParseTweet;
+import tutorial.storm.trident.operations.Print;
 import tutorial.storm.trident.operations.Split;
 import tutorial.storm.trident.operations.TweetIdExtractor;
 
@@ -48,7 +48,7 @@ public class RealTimeTextSearch {
                 .each(new Fields("str"), new ParseTweet(), new Fields("text", "content", "user"))
                 .each(new Fields("text", "content"), new TweetIdExtractor(), new Fields("tweetId"))
                 .project(new Fields("tweetId", "text"))
-                .each(new Fields("tweetId", "text"), new DebugFilter())
+                .each(new Fields("tweetId", "text"), new Print())
                 .partitionPersist(new ElasticSearchStateFactory(), new Fields("tweetId", "text"), new ElasticSearchStateUpdater());
 
         /**

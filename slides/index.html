@@ -3,32 +3,47 @@
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head> 
-    <title>Strataconf London 2013 - Storm Trident Tutorial</title>
+    <title>Storm Trident Tutorial - Strataconf London 2013</title>
     <meta name="copyright" content="http://creativecommons.org/licenses/by/3.0/"/>
     <script src="Tools/Slidy/slidy.js" charset="utf-8" type="text/javascript"></script> 
     <link rel="stylesheet" type="text/css" media="screen, projection, print" href="Tools/Slidy/peerindex.css" /> 
 </head>
 <body>
-<div class="background">
-    <img id="head-logo" title="logo" alt="PeerIndex" src="images/logo.png" />
+<div style="float:right">
+    <img title="logo" alt="Strata Conf London" src="images/logo.png" />
 </div>
 
 <!-- Cover Page-->
 <div class="slide cover"> 
-    <a href="http://www.peerindex.com/">
-    <img src="images/influence-graph.png" alt="Influence Graph" class="cover" />
+    <a href="http://strataconf.com/strataeu2013">
+    <img src="images/strata_og200x200.gif" alt="Strata Conf London" class="cover" />
     </a>
     <h1>Scalable Real-time Analytics with Storm (Trident)</h1>
-    <p><a href="mailto:es@peerindex.com">Enno Shioji</a></p>
-    <p><a href="mailto:dp@peerindex.com">Davide Palmisano</a></p>
-    <p><a href="mailto:mt@peerindex.com">Mischa Tuffield</a></p>
-    <p>2013-11-13 : <a href="http://strataconf.com/strataeu2013/public/schedule/detail/31206">Strata Conf 2013</p>
-    <p>Slides : <a href="http://mmt.me.uk/slides/cam20101118/">http://github.com/....</a></p>
+    <p><a href="mailto:es@peerindex.com">Enno Shioji</a> <a href="https://twitter.com/eshioji">@eshioji</a></p>
+    <p><a href="mailto:dp@peerindex.com">Davide Palmisano</a> <a href="https://twitter.com/dpalmisano">@dpalmisano</a></p>
+    <p><a href="mailto:mt@peerindex.com">Mischa Tuffield</a> <a href="https://twitter.com/mischat">@mischat</a></p>
+    <p>2013-11-13 : <a href="http://strataconf.com/strataeu2013/public/schedule/detail/31206">Strata Conf 2013</a></p>
+    <p>These slides can be found on github:</p>
+    <p><a href="http://htmlpreview.github.io/?https://rawgithub.com/mischat/trident-tutorial/blob/master/slides/index.html">http://htmlpreview.github.io/?https://rawgithub.com/mischat/trident-tutorial/blob/master/slides/index.html</a></p>
+    <p>This whole tutorial can we downloaded from github: <a href="http://bit.ly/stratastorm">http://bit.ly/stratastorm</a></p>
+
 </div> 
 
 <!-- Overview -->
 <div class="slide">
-    <h1>Presentation Overview</h1>
+    <h1>Goals</h1>
+    <p>We would like to see you leave today </p>
+    <ul>
+        <li>Understanding Storm</li>
+        <li>Understanding Trident</li>
+        <li>Having written a Storm Topology</li>
+        <li>Having written code to analyse the 1% Twitter sample in Real-Time</li>
+    </ul>
+</div>
+
+<!-- Overview -->
+<div class="slide">
+    <h1>Content</h1>
     <ul>
         <li>What is Storm?</li>
         <li>Motivations</li>
@@ -42,19 +57,107 @@
 
 <!--slide-->
 <div class="slide">
-    <h2>Getting Started</h2>
+    <h1>Getting Setup (Required)</h1>
     <ul>
-        <li>Use this hashtag twitter #stratastorm</li>
-        <li>Install Java</li>
-        <li>Install Maven</li>
-        <li>Grab one of us or use twitter if you need help!</li>
         <li>Clone the tutorial's repo <a href="https://github.com/eshioji/trident-tutorial">https://github.com/eshioji/trident-tutorial</a></li>
+        <li>Minimal Setup to work through our tutorial
+            <ul>
+                <li>Oracle JAVA 1.6 or 1.7</li>
+                <li>Working version of Maven</li>
+                <li>Working version of git</li>
+                <li>A working IDE would be ideal, we all use Intellij CE</li>
+                <pre> java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar tutorial.storm.trident.example.TopHashtagAnalysis ec2-54-216-194-46.eu-west-1.compute.amazonaws.com:12000</pre>
+            </ul>
+        </li>
+
+        <li>Please use the hashtag '<a href="https://twitter.com/search?q=%23stratastorm&src=hash&f=realtime">#stratastorm</a>' on Twitter</li>
+        <li><b>Note that:</b> if you have a twitter account, you can use the OAuthTool to get your own credentials to access the <a href="https://dev.twitter.com/docs/api/1.1/get/statuses/sample">1% sample stream</a>. You can add these to your twitter4j.properties (by copying the twitter4j.properties.template file in the git repo. As we will be turning off our Kafka queue of tweets after this tutorial.</li>
     </ul>
 </div>
 
 <!--slide-->
 <div class="slide">
-    <h2>What is Storm?</h2>
+    <h1>Advanced Setup (Optional)</h1>
+    <ul>
+        <li>Use a VirtualBox VM we prepared for this worksop
+            <ul>
+                <li><a href="http://mmt.me.uk/StormTutorial20131113.ova.tar.gz">StormTutorial20131113.ova.tar.gz</a></li>
+                <li>username 'root'</li>
+                <li>password 'reverse'</li>
+                <li>Check the README file to start a 1 machine storm cluster</li>
+            </ul>
+        </li>
+        <li>Or you can install Storm on your own laptop</li>
+        <li>...</li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h1>Install Storm on OSX 10.9 (Optional)</h1>
+    <ul>
+        <li><a href="http://stackoverflow.com/questions/3987683/homebrew-install-specific-version-of-formula">Brew install an old version of</a> zero_mq, version 2.1.7</a></li>
+    <li>Install gcc4.2 from Apple and <a href="https://github.com/mxcl/homebrew/wiki/Custom-GCC-and-cross-compilers"> use it to compile</a> jzmq</li>
+    <li>Make sure that you have the Java Header files required to build jzmq</li>
+    <li>Install 'java for os x 2013-005 Developer Package' from the <a href="https://developer.apple.com/downloads/index.action#">Apple Developer Portal</a></li>
+    <li>git clone https://github.com/nathanmarz/jzmq.git using gcc4.2</li>
+    <li>Configure a zookeeper cluster by copying the default conf file to zoo.cfg</li>
+    <li>Grab <a href="https://dl.dropboxusercontent.com/s/p5wf0hsdab5n9kn/storm-0.9.0-rc2.zip">0.9.0-rc2</a> from the Storm Project</li>
+
+    <li>If you have problems installing jzmq you can try</li>
+    <pre>
+    user$ git clone https://github.com/nathanmarz/jzmq.git
+    user$ cd jzmq
+    user$ ./autogen.sh
+    user$ ./configure
+    user$ touch src/classdist_noinst.stamp
+    user$ cd src
+    user$ CLASSPATH=.:./.:$CLASSPATH javac -d . org/zeromq/ZMQ.java org/zeromq/ZMQException.java org/zeromq/ZMQQueue.java org/zeromq/ZMQForwarder.java org/zeromq/ZMQStreamer.java
+
+    user$ cd ..
+    user$ make
+    user$ sudo make install
+    </pre>
+    <li>Configure Storm, by creating a storm.yaml file with the following:</li>
+    <pre>
+storm.zookeeper.servers:
+  - "127.0.0.1"
+storm.local.dir: "/tmp/storm"
+nimbus.host: "127.0.0.1"
+supervisor.slots.ports:
+    - 6700
+    - 6701
+    - 6702
+    - 6703
+    </pre>
+    <li>And then finally you can run Storm like so</li>
+    <pre>
+user$ $ZOOKEEPER_HOME/bin/zkServer start
+user$ $STORM_HOME/bin/storm nimbus &amp;
+user$ $STORM_HOME/bin/storm supervisor &amp;
+user$ $STORM_HOME/bin/storm ui &amp;
+    </pre>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h1>PeerIndex and Storm</h1>
+    <p><img style="float:right" src="images/peerindex_big.jpg" alt="PeerIndex"/></p>
+    <ul>
+        <li>Who we are?</li>
+        <li><em>Start-up, not vendor</em></li>
+        <li>What we do?</li>
+        <li><em>We Measure Influence online</em></li>
+        <li><em>Influence online Marketing</em></li>
+        <li>Why we used Storm?</li>
+        <li><em>...</em></li>
+    </ul>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h1>What is Storm?</h1>
 
     <p><em>"Storm is to Real-time what Hadoop is to Batch processing"</em></p>
     <ul>
@@ -70,7 +173,7 @@
 
 <!--slide-->
 <div class="slide">
-    <h2>Motivations - Why use Storm?</h2>
+    <h1>Motivations - Why use Storm?</h1>
     <p>Traditionally writing scalable stream based processing suffered from 3 major downfalls</p>
     <ul>
         <li><b>Tedious:</b> You spend most of your development time configuring where to send messages, deploying workers, and deploying intermediate queues. The realtime processing logic that you care about corresponds to a relatively small percentage of your codebase.</li>
@@ -83,7 +186,7 @@
 
 <!--slide-->
 <div class="slide">
-    <h2>Further Motivations</h2>
+    <h1>Further Motivations</h1>
     <ul>
         <li>More and more data is being delivered as streams in real-time
             <ul>
@@ -105,7 +208,7 @@
 
 <!--slide-->
 <div class="slide">
-    <h2>Use Cases</h2>
+    <h1>Use Cases</h1>
     <ul>
         <li><b>Stream processing</b>: Storm was built to process streams of new data whilst updating databases in real-time</li>
         <li><b>Continuous computation</b>: Storm can do continuous queries whilst being able to stream the results in real-time</li>
@@ -115,7 +218,7 @@
 
 <!--slide-->
 <div class="slide">
-    <h2>Core Concepts</h2>
+    <h1>Core Concepts</h1>
     <p><img style="float:right" src="images/topology.png" alt="Anatomy of a Storm Project"/></p>
     <br/>
     <ul>
@@ -129,7 +232,7 @@
 
 <!--slide-->
 <div class="slide">
-    <h2>Architecture</h2>
+    <h1>Architecture</h1>
     <p><img style="float:right" src="images/zookeeper.png" alt="Storm Architecture"/></p>
     <p>Fault-tolerant &amp; scalable architecture is achieved using:</p>
     <ul>    
@@ -161,14 +264,34 @@
 
 <!--slide-->
 <div class="slide">
-    <h2>Multi-node Storm Cluster</h2>
-    http://www.michael-noll.com/blog/uploads/Storm_multi-node-cluster_overview.png
+    <h1>Multi-node Storm Cluster</h1>
+
     <p><img style="float:right" src="images/Storm_multi-node-cluster_overview.png" alt="Storm Multinode cluster"/></p>
+
+    <ul>
+        <li>Illustration of what the minimal storm cluster looks like 
+        <ul>
+            <li>Zookeeper running on machines</li>
+            <li>One supervisor running for worker node</li>
+            <li>One instance of Nimbus and the Storm UI</li>
+        </ul>
+        </li>
+
+    </ul>
+    <div style="clear:both"></div>
+
+    <p style="float:right;"><a href="http://www.michael-noll.com/blog/uploads/Storm_multi-node-cluster_overview.png">source: Michael Noll</a></p>
 </div>
 
 <!--slide-->
 <div class="slide">
-    <h2>Architectural Gotchas</h2>
+    <h1>Storm Cluster UI</h1>
+    <p><img src="images/storm_ui.png" alt="Storm Cluster UI"/></p>
+</div>
+
+<!--slide-->
+<div class="slide">
+    <h1>Important Architectural Notes</h1>
 
     <ul>
         <li>Transactional Processing
@@ -187,17 +310,19 @@
 
 <!--slide-->
 <div class="slide">
-    <h2>Low-level API</h2>
+    <h1>Low-level API</h1>
     <ul>
         <li>Similar to the Hadoop API</li>
         <li>Trident is an abstraction ontop of the Low-Level API</li>
         <li>For more details have a look at the <a href="https://github.com/nathanmarz/storm-starter/blob/master/src/jvm/storm/starter/WordCountTopology.java">WordCountTopology</a> in the <a href="https://github.com/nathanmarz/storm-starter/">Storm Starter Project</a></li>
+        <li>Checkout the below topology for a simple example of the low-level API. Below even illustrates who one can use Python to split strings in Storm</li>
+        <li><a href="https://github.com/nathanmarz/storm-starter/blob/master/src/jvm/storm/starter/WordCountTopology.java">https://github.com/nathanmarz/storm-starter/blob/master/src/jvm/storm/starter/WordCountTopology.java</a></li>
     </ul>
 </div>
 
 <!--slide-->
 <div class="slide">
-    <h2>Trident</h2>
+    <h1>Trident</h1>
     <ul>
         <li>High-level abstraction for dealing with streams</li>
         <li>What Pig, Hive, or Cascading are to Hadoop</li>
@@ -218,7 +343,7 @@
 
 <!--slide-->
 <div class="slide">
-    <h2>Distributed RPC</h2>
+    <h1>Distributed RPC</h1>
     <p><img style="float:right" src="images/drpc-workflow.png" alt="DRPC"/></p>
     <br/>
     <ul>
@@ -228,12 +353,22 @@
     </ul>
 </div>
 
+<!--slide-->
+<div class="slide">
+    <h1>Acknowledgements</h1>
+    <ul>
+        <li>Nathan</li>
+        <li>Storm London Meetup</li>
+        <li>...</li>
+    </ul>
+</div>
 
 <!--slide-->
 <div class="slide">
-    <h2>Now on to the Actual Tutorial :)</h2>
+    <h1>Now on to the Actual Tutorial :)</h1>
     <ul>
         <li><a href="https://github.com/eshioji/trident-tutorial">https://github.com/eshioji/trident-tutorial</a></li>
+        <li>Please use the hashtag '<a href="https://twitter.com/search?q=%23stratastorm&src=hash&f=realtime">#stratastorm</a>' on Twitter</li>
     </ul>
 </div>
 
