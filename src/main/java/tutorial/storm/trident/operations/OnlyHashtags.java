@@ -1,9 +1,6 @@
 package tutorial.storm.trident.operations;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import storm.trident.operation.BaseFilter;
-import storm.trident.operation.Filter;
 import storm.trident.tuple.TridentTuple;
 import tutorial.storm.trident.testutil.Content;
 

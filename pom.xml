@@ -85,6 +85,11 @@
             <artifactId>scala-library</artifactId>
             <version>2.9.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>0.90.3</version>
+        </dependency>
 
         <!-- To access and parse tweets -->
         <dependency>

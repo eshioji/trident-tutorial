@@ -6,30 +6,15 @@ import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 import com.google.common.collect.ImmutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import storm.trident.Stream;
 import storm.trident.TridentTopology;
-import storm.trident.operation.Assembly;
-import storm.trident.operation.BaseAggregator;
-import storm.trident.operation.ReducerAggregator;
-import storm.trident.operation.TridentCollector;
 import storm.trident.operation.builtin.Count;
 import storm.trident.operation.builtin.Sum;
-import storm.trident.state.BaseStateUpdater;
-import storm.trident.state.State;
-import storm.trident.state.map.MapState;
 import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
-import storm.trident.tuple.TridentTuple;
 import tutorial.storm.trident.operations.DebugFilter;
 import tutorial.storm.trident.operations.DivideAsDouble;
-import tutorial.storm.trident.operations.StringCounter;
-import tutorial.storm.trident.testutil.FakeTweetsBatchSpout;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**

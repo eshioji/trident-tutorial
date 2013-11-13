@@ -7,8 +7,6 @@ import backtype.storm.generated.StormTopology;
 import backtype.storm.task.IMetricsContext;
 import backtype.storm.tuple.Fields;
 import com.google.common.collect.ImmutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import storm.trident.TridentState;
 import storm.trident.TridentTopology;
 import storm.trident.operation.builtin.Count;

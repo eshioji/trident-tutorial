@@ -12,8 +12,8 @@ import storm.trident.operation.BaseFilter;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.tuple.TridentTuple;
-import tutorial.storm.trident.operations.StringCounter;
 import tutorial.storm.trident.operations.DebugFilter;
+import tutorial.storm.trident.operations.StringCounter;
 import tutorial.storm.trident.testutil.FakeTweetsBatchSpout;
 
 import java.util.HashMap;

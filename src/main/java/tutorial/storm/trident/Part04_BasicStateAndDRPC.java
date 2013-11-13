@@ -10,10 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import storm.trident.TridentState;
 import storm.trident.TridentTopology;
-import storm.trident.operation.builtin.*;
+import storm.trident.operation.builtin.Count;
+import storm.trident.operation.builtin.FilterNull;
+import storm.trident.operation.builtin.MapGet;
+import storm.trident.operation.builtin.Sum;
 import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
-import tutorial.storm.trident.operations.RegexFilter;
 import tutorial.storm.trident.operations.Split;
 import tutorial.storm.trident.testutil.FakeTweetGenerator;
 
@@ -42,10 +44,10 @@ public class Part04_BasicStateAndDRPC {
         testSpout.feed(fakeTweets.getNextTweetTuples("jason"));
 
         // This is how you make DRPC calls. First argument must match the function name
-        System.out.println(drpc.execute("ping", "ping pang pong"));
-        System.out.println(drpc.execute("count", "america america ace ace ace item"));
+        // System.out.println(drpc.execute("ping", "ping pang pong"));
+        // System.out.println(drpc.execute("count", "america america ace ace ace item"));
         System.out.println(drpc.execute("count_per_actor", "ted"));
-        System.out.println(drpc.execute("count_per_actors", "ted mary pere jason"));
+        // System.out.println(drpc.execute("count_per_actors", "ted mary pere jason"));
 
         // You can use a client library to make calls remotely
 //        DRPCClient client = new DRPCClient("drpc.server.location", 3772);
@@ -86,6 +88,8 @@ public class Part04_BasicStateAndDRPC {
         //
         // In order to call the DRPC defined below, you'd use "count_per_actor" as the function name
         // The function arguments will be available as "args"
+
+        /*
         topology
                 .newDRPCStream("ping", drpc)
                 .each(new Fields("args"), new Split(" "), new Fields("reply"))
@@ -98,13 +102,14 @@ public class Part04_BasicStateAndDRPC {
                 .each(new Fields("args"), new Split(" "), new Fields("split"))
                 .each(new Fields("split"), new RegexFilter("a.*"))
                 .groupBy(new Fields("split"))
-                .aggregate(new Count(), new Fields("count"));
+                .aggregate(new Count(), new Fields("count"));   */
 
 
         // More usefully, you can query the state you created earlier
         topology
                 .newDRPCStream("count_per_actor", drpc)
                 .stateQuery(countState, new Fields("args"), new MapGet(), new Fields("count"));
+
 
         // Here is a more complex example
         topology

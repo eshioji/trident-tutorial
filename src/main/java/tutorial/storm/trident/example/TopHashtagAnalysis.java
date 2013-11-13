@@ -6,7 +6,6 @@ import backtype.storm.LocalDRPC;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
-import backtype.storm.tuple.Values;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import storm.kafka.KafkaConfig;
@@ -19,11 +18,11 @@ import storm.trident.operation.builtin.Count;
 import storm.trident.operation.builtin.FirstN;
 import storm.trident.operation.builtin.MapGet;
 import storm.trident.operation.builtin.TupleCollectionGet;
-import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
-import tutorial.storm.trident.operations.*;
-import tutorial.storm.trident.testutil.SampleTweet;
-import tutorial.storm.trident.testutil.TweetIngestor;
+import tutorial.storm.trident.operations.ExtractFollowerClassAndContentName;
+import tutorial.storm.trident.operations.OnlyEnglish;
+import tutorial.storm.trident.operations.OnlyHashtags;
+import tutorial.storm.trident.operations.ParseTweet;
 
 import java.io.IOException;
 

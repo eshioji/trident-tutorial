@@ -1,9 +1,6 @@
 package tutorial.storm.trident.operations;
 
 import backtype.storm.tuple.Values;
-import clojure.lang.Numbers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.tuple.TridentTuple;

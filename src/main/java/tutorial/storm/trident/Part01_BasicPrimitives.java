@@ -11,8 +11,6 @@ import storm.trident.operation.builtin.Count;
 import storm.trident.spout.IBatchSpout;
 import storm.trident.testing.MemoryMapState;
 import tutorial.storm.trident.operations.DebugFilter;
-import tutorial.storm.trident.operations.RegexFilter;
-import tutorial.storm.trident.operations.ToUpperCase;
 import tutorial.storm.trident.testutil.FakeTweetsBatchSpout;
 
 import java.io.IOException;
@@ -48,6 +46,7 @@ public class Part01_BasicPrimitives {
 
         // The "each" primitive allows us to apply either filters or functions to the stream
         // We always have to select the input fields.
+        /*
         topology
                 .newStream("filter", spout)
                 .each(new Fields("actor"), new RegexFilter("pere"))
@@ -71,21 +70,23 @@ public class Part01_BasicPrimitives {
         // Parallelism hint is applied downwards until a partitioning operation (we will see this later).
         // This topology creates 5 spouts and 5 bolts:
         // Let's debug that with TridentOperationContext.partitionIndex !
+
         topology
                 .newStream("parallel", spout)
                 .each(new Fields("actor"), new RegexFilter("pere"))
                 .parallelismHint(5)
                 .each(new Fields("text", "actor"), new DebugFilter());
-
+        */
         // You can perform aggregations by grouping the stream and then applying an aggregation
         // Note how each actor appears more than once. We are aggregating inside small batches (aka micro batches)
         // This is useful for pre-processing before storing the result to databases
+        /*
         topology
                 .newStream("aggregation", spout)
                 .groupBy(new Fields("actor"))
                 .aggregate(new Count(),new Fields("count"))
                 .each(new Fields("actor", "count"),new DebugFilter())
-        ;
+        ;*/
 
         // In order ot aggregate across batches, we need persistentAggregate.
         // This example is incrementing a count in the DB, using the result of these micro batch aggregations
@@ -93,7 +94,9 @@ public class Part01_BasicPrimitives {
         topology
                 .newStream("aggregation", spout)
                 .groupBy(new Fields("actor"))
-                .persistentAggregate(new MemoryMapState.Factory(),new Count(),new Fields("count"))
+                .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
+                .newValuesStream()
+                .each(new Fields("count", "actor"), new DebugFilter())
         ;
 
         return topology.build();
