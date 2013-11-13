@@ -6,30 +6,15 @@ import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 import com.google.common.collect.ImmutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import storm.trident.Stream;
 import storm.trident.TridentTopology;
-import storm.trident.operation.Assembly;
-import storm.trident.operation.BaseAggregator;
-import storm.trident.operation.ReducerAggregator;
-import storm.trident.operation.TridentCollector;
 import storm.trident.operation.builtin.Count;
 import storm.trident.operation.builtin.Sum;
-import storm.trident.state.BaseStateUpdater;
-import storm.trident.state.State;
-import storm.trident.state.map.MapState;
 import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
-import storm.trident.tuple.TridentTuple;
-import tutorial.storm.trident.operations.DebugFilter;
+import tutorial.storm.trident.operations.Print;
 import tutorial.storm.trident.operations.DivideAsDouble;
-import tutorial.storm.trident.operations.StringCounter;
-import tutorial.storm.trident.testutil.FakeTweetsBatchSpout;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -65,7 +50,7 @@ public class Part03_AdvancedPrimitives2 {
                 .aggregate(new Fields("age"), new Sum(), new Fields("age_sum"))
                 .chainEnd()
                 .each(new Fields("age_sum", "count"), new DivideAsDouble(), new Fields("mean_age"))
-                .each(new Fields("city", "mean_age"), new DebugFilter())
+                .each(new Fields("city", "mean_age"), new Print())
         ;
 
         // What if we want to persist results of an aggregation, but want to further process these
@@ -75,7 +60,7 @@ public class Part03_AdvancedPrimitives2 {
                 .groupBy(new Fields("city"))
                 .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
                 .newValuesStream()
-                .each(new Fields("city", "count"), new DebugFilter());
+                .each(new Fields("city", "count"), new Print());
 
         return topology.build();
     }

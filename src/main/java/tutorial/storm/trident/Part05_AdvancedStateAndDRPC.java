@@ -7,8 +7,6 @@ import backtype.storm.generated.StormTopology;
 import backtype.storm.task.IMetricsContext;
 import backtype.storm.tuple.Fields;
 import com.google.common.collect.ImmutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import storm.trident.TridentState;
 import storm.trident.TridentTopology;
 import storm.trident.operation.builtin.Count;
@@ -19,7 +17,7 @@ import storm.trident.state.State;
 import storm.trident.state.StateFactory;
 import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
-import tutorial.storm.trident.operations.DebugFilter;
+import tutorial.storm.trident.operations.Print;
 import tutorial.storm.trident.operations.DivideAsDouble;
 import tutorial.storm.trident.testutil.FakeTweetGenerator;
 
@@ -82,7 +80,7 @@ public class Part05_AdvancedStateAndDRPC {
                 .newDRPCStream("age_stats", drpc)
                 .stateQuery(countState, new TupleCollectionGet(), new Fields("actor", "location"))
                 .stateQuery(nameToAge, new Fields("actor"), new MapGet(), new Fields("age"))
-                .each(new Fields("actor","location","age"), new DebugFilter())
+                .each(new Fields("actor","location","age"), new Print())
                 .groupBy(new Fields("location"))
                 .chainedAgg()
                 .aggregate(new Count(), new Fields("count"))

@@ -18,6 +18,7 @@ public class RegexFilter extends BaseFilter {
 
     @Override
     public boolean isKeep(TridentTuple tuple) {
+
         String string = tuple.getString(0);
         return pattern.matcher(string).matches();
     }
