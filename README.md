@@ -38,12 +38,16 @@ Have a look at the accompanying [slides][4] as well.
 ```
 
 
-## How to run the tutorial
+## Before you run the tutorials
  1. Install Java 1.6 and Maven 3 (these versions are recommended, but you can also use Java 1.7 and/or Maven 2) 
  2. Clone this repo (if you don't have git, you can also download the source as zip file and extract it)
- 3. Go to the project folder and execute `mvn clean package` 
- 4. Run 
+ 3. Go to the project folder and execute `mvn clean package`, and see if the build succeeds
 
+## Going through Part*.java
+These classes are primarily meant to be read, but you can run them as well. Before you run the main method, you should comment out all streams except the one you are interested in (otherwise there will be lots of output)
+
+## Running the Skeleton and examples
+These toplogies expect a Kafka spout that streams tweets. The Kafka spout needs a Kafka queue. There is a utility class called `Tweetingestor` which starts a local Kafka broker, connects to twitter and publishes tweets. To use this class however, you must provide a valid twitter access token in `twitter4j.properties` file. 
 ```bash
 java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
         tutorial.storm.trident.example.TopHashtagAnalysis \
