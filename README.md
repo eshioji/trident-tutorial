@@ -13,6 +13,28 @@ Have a look at the accompanying [slides][4] as well.
 
 [4]:http://htmlpreview.github.io/?https://rawgithub.com/mischat/trident-tutorial/blob/master/slides/index.html#(4)
 
+## How this tutorial is structured
+```
+├── src
+    └── main
+        ├── java
+        │   └── tutorial
+        │       └── storm
+        │           ├── trident
+        │           |    ├── example           ------ Complete examples
+        │           |    ├── operations        ------ Functions and filters that is used in the tutorial/examples
+        │           |    └── testutil          ------ Test utility classes (e.g test data generators)
+        |           |        └── TweetIngestor ------ Creates a local Kafka broker that streams twitter public stream
+        |           ├── Part*.java             ------ Illustrates usage of Trident step by step.
+        |           └── Skeleton.java          ------ Stub for writing your own topology
+        └── resources
+            └── tutorial
+                └── storm
+                    └── trident
+                        └── testutil      ------ Contains test data and config files
+```
+
+
 ## How to run the tutorial
  1. Install Java 1.6 and Maven 3 (these versions are recommended, but you can also use Java 1.7 and/or Maven 2) 
  2. Clone this repo (if you don't have git, you can also download the source as zip file and extract it)
