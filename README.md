@@ -14,6 +14,9 @@ Have a look at the accompanying [slides][4] as well.
 [4]:http://htmlpreview.github.io/?https://rawgithub.com/mischat/trident-tutorial/blob/master/slides/index.html#(4)
 
 ## How this tutorial is structured
+* Go through Part*.java to learn about the basics of Trident
+* Implement your own topology using Skeleton.java, or have a look at other examples
+
 ```
 ├── src
     └── main
