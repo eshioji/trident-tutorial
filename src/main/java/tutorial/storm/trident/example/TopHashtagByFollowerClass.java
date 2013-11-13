@@ -6,6 +6,7 @@ import backtype.storm.LocalDRPC;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
+import backtype.storm.tuple.Values;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import storm.kafka.KafkaConfig;
@@ -18,11 +19,13 @@ import storm.trident.operation.builtin.Count;
 import storm.trident.operation.builtin.FirstN;
 import storm.trident.operation.builtin.MapGet;
 import storm.trident.operation.builtin.TupleCollectionGet;
+import storm.trident.testing.FeederBatchSpout;
 import storm.trident.testing.MemoryMapState;
 import tutorial.storm.trident.operations.ExtractFollowerClassAndContentName;
 import tutorial.storm.trident.operations.OnlyEnglish;
 import tutorial.storm.trident.operations.OnlyHashtags;
 import tutorial.storm.trident.operations.ParseTweet;
+import tutorial.storm.trident.testutil.SampleTweet;
 
 import java.io.IOException;
 
@@ -68,11 +71,11 @@ public class TopHashtagByFollowerClass {
 
         LocalDRPC drpc = new LocalDRPC();
         LocalCluster cluster = new LocalCluster();
-        // FeederBatchSpout feederSpout = new FeederBatchSpout(ImmutableList.of("str"));
+//        FeederBatchSpout feederSpout = new FeederBatchSpout(ImmutableList.of("str"));
+//
+//        SampleTweet sampleTweet = new SampleTweet();
 
-        // SampleTweet sampleTweet = new SampleTweet();
-
-        cluster.submitTopology("hackaton", conf, buildTopology(drpc, tweetSpout));
+        cluster.submitTopology("hackaton", conf, buildTopology(drpc,tweetSpout));
 
 //        spout.feed(new Values(ImmutableList.of("rose")));
 //        spout.feed(new Values(ImmutableList.of("rose")));
@@ -90,7 +93,7 @@ public class TopHashtagByFollowerClass {
         while(!Thread.currentThread().isInterrupted()){
             Thread.sleep(500);
             System.out.println(drpc.execute("hashtag_count",""));
-            // feederSpout.feed(ImmutableList.of(new Values(sampleTweet.sampleTweet())));
+//            feederSpout.feed(ImmutableList.of(new Values(sampleTweet.sampleTweet())));
         }
     }
 

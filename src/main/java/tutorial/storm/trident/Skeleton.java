@@ -77,7 +77,7 @@ public class Skeleton {
 
         while (!Thread.currentThread().isInterrupted()) {
             Thread.sleep(3000);
-            System.out.println(drpc.execute("fake", "test"));
+//            System.out.println(drpc.execute("fake", "test"));
         }
     }
 
