@@ -14,9 +14,21 @@ import storm.kafka.StringScheme;
 import storm.kafka.trident.TransactionalTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
 import storm.trident.TridentTopology;
-import tutorial.storm.trident.operations.Print;
+import storm.trident.operation.builtin.Count;
+import storm.trident.operation.builtin.FirstN;
+import storm.trident.operation.builtin.MapGet;
+import storm.trident.operation.builtin.TupleCollectionGet;
+import storm.trident.testing.FeederBatchSpout;
+import storm.trident.testing.MemoryMapState;
+import tutorial.storm.trident.operations.*;
+import tutorial.storm.trident.testutil.SampleTweet;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.UUID;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 
 /**
@@ -47,21 +59,29 @@ public class Skeleton {
         LocalDRPC drpc = new LocalDRPC();
         LocalCluster cluster = new LocalCluster();
 
-        String testKafkaBrokerHost = args[0];
+        String testKafkaBrokerHost;
+        if (args.length == 0) {
+            final String tmpFile = "/tmp/"+UUID.randomUUID();
+            new File(tmpFile).deleteOnExit();
+            TweetIngestor ingestor = new TweetIngestor(tmpFile, "test", 12000);
+            ingestor.startAndWait();
+            testKafkaBrokerHost = "127.0.0.1:12000";
+        }else{
+            checkArgument(args.length == 1);
+            testKafkaBrokerHost = args[0];
+        }
+
         TransactionalTridentKafkaSpout tweetSpout = tweetSpout(testKafkaBrokerHost);
         cluster.submitTopology("hackaton", conf, buildTopology(drpc, tweetSpout));
 
 
         while (!Thread.currentThread().isInterrupted()) {
-            Thread.sleep(500);
-//            System.out.println(drpc.execute("fake", "test"));
+            Thread.sleep(3000);
+            System.out.println(drpc.execute("fake", "test"));
         }
     }
 
     private static TransactionalTridentKafkaSpout tweetSpout(String testKafkaBrokerHost) {
-        // You can start your own Kafka broker that emits tweets. See {@link TweetIngestor} for details
-//        TweetIngestor ingestor = new TweetIngestor("/tmp/kafka", "test", 12000);
-//        ingestor.startAndWait();
         KafkaConfig.BrokerHosts hosts = TridentKafkaConfig.StaticHosts.fromHostString(ImmutableList.of(testKafkaBrokerHost), 1);
         TridentKafkaConfig config = new TridentKafkaConfig(hosts, "test");
         config.scheme = new SchemeAsMultiScheme(new StringScheme());
