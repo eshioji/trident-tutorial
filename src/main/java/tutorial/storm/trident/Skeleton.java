@@ -59,6 +59,7 @@ public class Skeleton {
     }
 
     private static TransactionalTridentKafkaSpout tweetSpout(String testKafkaBrokerHost) {
+        // You can start your own Kafka broker that emits tweets. See {@link TweetIngestor} for details
 //        TweetIngestor ingestor = new TweetIngestor("/tmp/kafka", "test", 12000);
 //        ingestor.startAndWait();
         KafkaConfig.BrokerHosts hosts = TridentKafkaConfig.StaticHosts.fromHostString(ImmutableList.of(testKafkaBrokerHost), 1);

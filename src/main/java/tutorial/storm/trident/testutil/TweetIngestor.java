@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 
 /**
+ * This is a test utility class to create a local kafka broker that streams tweets
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
 public class TweetIngestor extends AbstractService {
@@ -35,8 +36,14 @@ public class TweetIngestor extends AbstractService {
     private final TwitterStream stream;
     private final Producer<String, String> producer;
 
-    public TweetIngestor(String kafkaLogDir,String kafkaTopic, int kafkaPort) {
-        this.kafkaLocalBroker = new KafkaLocalBroker(kafkaLogDir,kafkaTopic,kafkaPort);
+    /**
+     *
+     * @param kafkaDataDir where Kafka stores its data
+     * @param kafkaTopic the topic name on which to publish the tweets
+     * @param kafkaPort the port for Kafka clients to connect
+     */
+    public TweetIngestor(String kafkaDataDir,String kafkaTopic, int kafkaPort) {
+        this.kafkaLocalBroker = new KafkaLocalBroker(kafkaDataDir,kafkaTopic,kafkaPort);
         TwitterStreamFactory fact = new TwitterStreamFactory();
         stream = fact.getInstance();
         Properties props = new Properties();
