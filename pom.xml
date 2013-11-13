@@ -149,7 +149,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.datasalt.trident.HackatonTopology</mainClass>
+                            <mainClass>tutorial.storm.trident.example.Skeleton</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
