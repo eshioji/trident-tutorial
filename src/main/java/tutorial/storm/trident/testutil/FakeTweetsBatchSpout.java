@@ -45,6 +45,7 @@ public class FakeTweetsBatchSpout implements IBatchSpout {
         // init
         System.err.println(this.getClass().getSimpleName() +":" + seq.incrementAndGet()+" opened.");
         fakeTweetGenerator = new FakeTweetGenerator();
+
     }
 
     @Override
