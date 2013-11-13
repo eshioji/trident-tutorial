@@ -32,7 +32,7 @@ import java.io.IOException;
 /**
  * @author Enno Shioji (enno.shioji@peerindex.com)
  */
-public class Skeleton {
+public class TopHashtagByFollowerClass {
 
     public static StormTopology buildTopology(LocalDRPC drpc, FeederBatchSpout spout) throws IOException {
 
