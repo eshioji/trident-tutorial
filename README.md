@@ -47,11 +47,16 @@ Have a look at the accompanying [slides][4] as well.
 These classes are primarily meant to be read, but you can run them as well. Before you run the main method, you should comment out all streams except the one you are interested in (otherwise there will be lots of output)
 
 ## Running the Skeleton and examples
-These toplogies expect a Kafka spout that streams tweets. The Kafka spout needs a Kafka queue. There is a utility class called `Tweetingestor` which starts a local Kafka broker, connects to twitter and publishes tweets. To use this class however, you must provide a valid twitter access token in `twitter4j.properties` file. 
+These toplogies expect a Kafka spout that streams tweets. The Kafka spout needs a Kafka queue. There is a utility class called `Tweetingestor` which starts a local Kafka broker, connects to twitter and publishes tweets. To use this class however, you must provide a valid twitter access token in `twitter4j.properties` file.   
+To do that,
+ 1. Go to https://dev.twitter.com and register
+ 2. Create an application and obtain a consumer key, consumer secret, access token and an access secret
+ 3. Copy `twitter4j.properties.template` as `twitter4j.properties` and replcace the `*******` with real credentials
+ 4. After that, execute
+
 ```bash
 java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
-        tutorial.storm.trident.example.TopHashtagAnalysis \
-        ec2-54-216-194-46.eu-west-1.compute.amazonaws.com:12000
+        tutorial.storm.trident.example.TopHashtagAnalysis
 ```
     
 
