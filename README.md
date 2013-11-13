@@ -18,10 +18,14 @@ Step by step instruction to run the tutorial
  1. Install Java 1.6 and Maven 3 (these versions are recommended, but you can also use Java 1.7 and/or Maven 2) 
  2. Clone this repo (if you don't have git, you can also download the source as zip file and extract it)
  3. Go to the project folder and execute  
- `bash
-  mvn clean package
- ` 
+    
+    mvn clean package
+    
  4. Run  
- `bash
-  java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar tutorial.storm.trident.example.TopHashtagAnalysis ec2-54-216-194-46.eu-west-1.compute.amazonaws.com:12000`
- `
+    
+    java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
+        tutorial.storm.trident.example.TopHashtagAnalysis \
+        ec2-54-216-194-46.eu-west-1.compute.amazonaws.com:12000
+    
+
+    
