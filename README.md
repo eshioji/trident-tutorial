@@ -10,6 +10,12 @@ This tutorial builds on [Pere Ferrera][1]'s excellent [material][2] for the [Tri
 [3]:http://www.meetup.com/Big-Data-Beers/events/112226662/
 
 
-Have a look at the [setup guide in our slides][4] for how to run the tutorial etc.
+Have a look at the accompanying [slides][4] as well.
 
 [4]:http://htmlpreview.github.io/?https://rawgithub.com/mischat/trident-tutorial/blob/master/slides/index.html#(4)
+
+Step by step instruction to run the tutorial
+ 1. Install Java 1.6 and Maven 3 (these versions are recommended, but you can also use Java 1.7 and/or Maven 2) 
+ 2. Clone this repo (if you don't have git, you can also download the source as zip file and extract it)
+ 3. Go to the project folder and execute `mvn clean package` 
+ 4. Run `java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar tutorial.storm.trident.example.TopHashtagAnalysis ec2-54-216-194-46.eu-west-1.compute.amazonaws.com:12000`
