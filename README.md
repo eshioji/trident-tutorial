@@ -10,10 +10,6 @@ This tutorial builds on [Pere Ferrera][1]'s excellent [material][2] for the [Tri
 [3]:http://www.meetup.com/Big-Data-Beers/events/112226662/
 
 
-* How to use this tutorial
- 1. Make sure you have Maven 3 and Java 1.6 installed
- ..* Even though Java 1.6 is recommended, the tutorial can run on 1.7 as well
- 2. Clone this repo
- ..* If you don't have git, you can download the code as a zip file and extract it
- 2. 
- 2. 
+Have a look at the [setup guide in our slides][4] for how to run the tutorial etc.
+
+[4]:http://htmlpreview.github.io/?https://rawgithub.com/mischat/trident-tutorial/blob/master/slides/index.html#(4)
