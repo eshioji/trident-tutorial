@@ -31,7 +31,9 @@ public class Part01_BasicPrimitives {
 
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("basic_primitives", conf, basicPrimitives(new FakeTweetsBatchSpout()));
-        Thread.sleep(100000);
+        Thread.sleep(30000);
+        cluster.shutdown();
+        
     }
 
     public static StormTopology basicPrimitives(IBatchSpout spout) throws IOException {

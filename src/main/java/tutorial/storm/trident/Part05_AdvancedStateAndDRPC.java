@@ -39,16 +39,16 @@ public class Part05_AdvancedStateAndDRPC {
         Config conf = new Config();
         LocalCluster cluster = new LocalCluster();
         LocalDRPC drpc = new LocalDRPC();
-            cluster.submitTopology("external_state_drpc", conf, externalState(drpc, testSpout));
+        cluster.submitTopology("external_state_drpc", conf, externalState(drpc, testSpout));
 
-            // You can use FeederBatchSpout to feed know values to the topology. Very useful for tests.
-            testSpout.feed(fakeTweets.getNextTweetTuples("ted"));
-            testSpout.feed(fakeTweets.getNextTweetTuples("ted"));
-            testSpout.feed(fakeTweets.getNextTweetTuples("mary"));
-            testSpout.feed(fakeTweets.getNextTweetTuples("jason"));
+        // You can use FeederBatchSpout to feed know values to the topology. Very useful for tests.
+        testSpout.feed(fakeTweets.getNextTweetTuples("ted"));
+        testSpout.feed(fakeTweets.getNextTweetTuples("ted"));
+        testSpout.feed(fakeTweets.getNextTweetTuples("mary"));
+        testSpout.feed(fakeTweets.getNextTweetTuples("jason"));
 
-            System.out.println(drpc.execute("age_stats", ""));
-            System.out.println("OK");
+        System.out.println(drpc.execute("age_stats", ""));
+        System.out.println("OK");
     }
 
 

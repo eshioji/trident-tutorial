@@ -48,7 +48,6 @@ public class Part03_AdvancedPrimitives2 {
 
         // You can "hand feed" values to the topology by using this spout
         testSpout.feed(ImmutableList.of(new Values("rose", "Shanghai", 32), new Values("mary", "Shanghai", 51), new Values("pere", "Jakarta", 65), new Values("Tom", "Jakarta", 10)));
-
     }
 
     private static StormTopology advancedPrimitives(FeederBatchSpout spout) throws IOException {

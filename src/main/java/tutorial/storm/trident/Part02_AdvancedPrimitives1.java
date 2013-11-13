@@ -31,6 +31,8 @@ public class Part02_AdvancedPrimitives1 {
 //        conf.put(Config.TOPOLOGY_DEBUG,true);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("advanced_primitives", conf, advancedPrimitives(new FakeTweetsBatchSpout(1000)));
+        Thread.sleep(30000);
+        cluster.shutdown();
     }
 
     private static StormTopology advancedPrimitives(FakeTweetsBatchSpout spout) {
