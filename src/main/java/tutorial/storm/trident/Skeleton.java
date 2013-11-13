@@ -14,11 +14,19 @@ import storm.kafka.StringScheme;
 import storm.kafka.trident.TransactionalTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
 import storm.trident.TridentTopology;
-import tutorial.storm.trident.operations.Print;
+import storm.trident.operation.builtin.Count;
+import storm.trident.operation.builtin.FirstN;
+import storm.trident.operation.builtin.MapGet;
+import storm.trident.operation.builtin.TupleCollectionGet;
+import storm.trident.testing.FeederBatchSpout;
+import storm.trident.testing.MemoryMapState;
+import tutorial.storm.trident.operations.*;
+import tutorial.storm.trident.testutil.SampleTweet;
 import tutorial.storm.trident.testutil.TweetIngestor;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkArgument;
