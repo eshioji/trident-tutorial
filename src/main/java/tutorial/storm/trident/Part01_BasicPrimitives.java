@@ -4,11 +4,17 @@ import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
+import backtype.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import storm.trident.TridentTopology;
+import storm.trident.operation.BaseFunction;
+import storm.trident.operation.Function;
+import storm.trident.operation.TridentCollector;
 import storm.trident.operation.builtin.Count;
 import storm.trident.spout.IBatchSpout;
+import storm.trident.testing.MemoryMapState;
+import storm.trident.tuple.TridentTuple;
 import tutorial.storm.trident.operations.Print;
 import tutorial.storm.trident.operations.RegexFilter;
 import tutorial.storm.trident.operations.ToUpperCase;
@@ -49,35 +55,35 @@ public class Part01_BasicPrimitives {
 
         // The "each" primitive allows us to apply either filters or functions to the stream
         // We always have to select the input fields.
-        topology
-                .newStream("filter", spout)
-                .each(new Fields("actor"), new RegexFilter("pere"))
-                .each(new Fields("actor", "text"), new Print());
+//        topology
+//                .newStream("filter", spout)
+//                .each(new Fields("actor"), new RegexFilter("pere"))
+//                .each(new Fields("actor", "text"), new Print());
 
         // Functions describe their output fields, which are always appended to the input fields.
         // As you see, Each operations can be chained.
-        topology
-                .newStream("function", spout)
-                .each(new Fields("text"), new ToUpperCase(), new Fields("uppercased_text"))
-                .each(new Fields("actor", "text", "uppercased_text"), new Print());
+//        topology
+//                .newStream("function", spout)
+//                .each(new Fields("text"), new ToUpperCase(), new Fields("uppercased_text"))
+//                .each(new Fields("actor", "text", "uppercased_text"), new Print());
 
         // You can prune unnecessary fields using "project"
-        topology
-                .newStream("projection", spout)
-                .each(new Fields("text"), new ToUpperCase(), new Fields("uppercased_text"))
-                .project(new Fields("uppercased_text"))
-                .each(new Fields("uppercased_text"), new Print());
+//        topology
+//                .newStream("projection", spout)
+//                .each(new Fields("text"), new ToUpperCase(), new Fields("uppercased_text"))
+//                .project(new Fields("uppercased_text"))
+//                .each(new Fields("uppercased_text"), new Print());
 
         // Stream can be parallelized with "parallelismHint"
-        // Parallelism hint is applied downwards until a partitioning operation (we will see this later).
-        // This topology creates 5 bolts:
-        // Let's debug that with TridentOperationContext.partitionIndex !
-        topology
-                .newStream("parallel", spout)
-                .each(new Fields("actor"), new RegexFilter("pere"))
-                .each(new Fields("text", "actor"), new Print())
-                .parallelismHint(5)
-        ;
+        // Parallelism hint is applied downwards until a partitioning operation (we will look at this in detail
+        // in Part02).
+        // This topology creates 5 bolts.
+//        topology
+//                .newStream("parallel", spout)
+//                .each(new Fields("actor"), new RegexFilter("pere"))
+//                .each(new Fields("text", "actor"), new Print())
+//                .parallelismHint(5)
+//        ;
 
         // You can perform aggregations by grouping the stream and then applying an aggregation
         // Note how each actor appears more than once. We are aggregating inside small batches (aka micro batches)
@@ -85,8 +91,7 @@ public class Part01_BasicPrimitives {
         topology
                 .newStream("aggregation", spout)
                 .groupBy(new Fields("actor"))
-                .aggregate(new Count(),new Fields("count"))
-                .each(new Fields("actor", "count"),new Print())
+                .aggregate(new Count(), new Fields("count"))
         ;
 
         // In order ot aggregate across batches, we need persistentAggregate.
