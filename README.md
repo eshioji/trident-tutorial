@@ -56,7 +56,7 @@ To do that,
 
 ```bash
 java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
-        tutorial.storm.trident.example.TopHashtagAnalysis
+        tutorial.storm.trident.Skeleton
 ```
     
 
