@@ -3,11 +3,12 @@ trident-tutorial
 
 A practical Storm Trident tutorial
 
-This tutorial builds on [Pere Ferrera][1]'s excellent [material][2] for the [Trident hackaton@Big Data Beers #4 in Berlin][3]
+This tutorial builds on [Pere Ferrera][1]'s excellent [material][2] for the [Trident hackaton@Big Data Beers #4 in Berlin][3]. The vagrant setup is based on Taylor Goetz's [contribution][6].
 
 [1]:https://github.com/pereferrera
 [2]:https://github.com/pereferrera/trident-hackaton
 [3]:http://www.meetup.com/Big-Data-Beers/events/112226662/
+[6]:https://github.com/ptgoetz/storm-vagrant
 
 Have a look at the accompanying [slides][4] as well.
 
@@ -18,6 +19,7 @@ Have a look at the accompanying [slides][4] as well.
 * Implement your own topology using Skeleton.java, or have a look at other examples
 
 ```
+├── environment                                ------ Vagrant resources to simulate a Storm cluster locally 
 ├── src
     └── main
         ├── java
@@ -60,4 +62,31 @@ java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
 ```
     
 
-    
+## Running a Storm cluster
+You can simulate a multi-machine Storm cluster on your local machine. To do this, first install [vagrant][5]. Then, install its host manager plugin by executing
+
+```
+$ vagrant plugin install host-manager
+```  
+
+Finally, go to `./environment` and execute `vagrant up`. It will take a while to download necessary resources, and you will be asked for root password as it edits the host file.
+
+You can list the vagrant VMs as follows:
+```
+$ vagrant status
+Current machine states:
+
+zookeeper                 running (virtualbox)
+nimbus                    running (virtualbox)
+supervisor1               running (virtualbox)
+supervisor2               running (virtualbox)
+
+This environment represents multiple VMs. The VMs are all listed
+above with their current state. For more information about a specific
+VM, run `vagrant status NAME`.
+```
+
+The vagrant configuration file is configured to forward standard nimbus, ui, and drpc ports on the host machine (i.e. your machine) to the appropriate guest VMs, so you can look at Storm UI on by simply navigating to `http://localhost:8080` as well as interact with it with its client scripts. You can ssh into these machines by doing e.g. `vagrant ssh nimbus` and take a look. Storm components are run by the `storm` user.
+
+
+[5]:http://www.vagrantup.com/
