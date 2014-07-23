@@ -10,15 +10,13 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
  */
 public class ElasticSearchSingleton {
 
-    private static Client INSTANCE;
+    private static final Client INSTANCE = getInstance();
 
-    public synchronized static Client getInstance() {
-        if(INSTANCE == null) {
+    public static Client getInstance() {
             Node node = nodeBuilder().node();
-            INSTANCE = node.client();
+            Client client = node.client();
             createIndex(INSTANCE);
-        }
-        return INSTANCE;
+            return client;
     }
 
     private static void createIndex(Client client) {
