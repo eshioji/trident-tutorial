@@ -65,9 +65,28 @@ java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
 ## Running a Storm cluster
 You can simulate a multi-machine Storm cluster on your local machine. To do this, first install [vagrant][5]. Then, install its host manager plugin by executing
 
-```$ vagrant plugin install host-manager```  
+```
+$ vagrant plugin install host-manager
+```  
 
-Finally, go to `./environment` and execute `vagrant up`. It will take a while to download necessary resources, and you will be asked for root password as it edits the host file. The vagrant configuration file is configured to forward standard nimbus, ui, and drpc ports on the host machine (i.e. your machine) to the appropriate guest VMs, so you can look at Storm UI on by simply navigating to `http://localhost:8080` as well as interact with it with its client scripts.
+Finally, go to `./environment` and execute `vagrant up`. It will take a while to download necessary resources, and you will be asked for root password as it edits the host file.
+
+You can list the vagrant VMs as follows:
+```
+$ vagrant status
+Current machine states:
+
+zookeeper                 running (virtualbox)
+nimbus                    running (virtualbox)
+supervisor1               running (virtualbox)
+supervisor2               running (virtualbox)
+
+This environment represents multiple VMs. The VMs are all listed
+above with their current state. For more information about a specific
+VM, run `vagrant status NAME`.
+```
+
+The vagrant configuration file is configured to forward standard nimbus, ui, and drpc ports on the host machine (i.e. your machine) to the appropriate guest VMs, so you can look at Storm UI on by simply navigating to `http://localhost:8080` as well as interact with it with its client scripts. You can ssh into these machines by doing e.g. `vagrant ssh nimbus` and take a look. Storm components are run by the `storm` user.
 
 
 [5]:http://www.vagrantup.com/
