@@ -40,102 +40,209 @@
         </repository>
     </repositories>
 
-    <!-- dependencies copied from storm-starter -->
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <!-- Storm -->
+                <dependency>
+                    <groupId>org.apache.storm</groupId>
+                    <artifactId>storm-core</artifactId>
+                    <version>0.9.2-incubating</version>
+                </dependency>
+                <dependency>
+                    <groupId>storm</groupId>
+                    <artifactId>storm-kafka</artifactId>
+                    <version>0.9.0-wip16a-scala292</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.apache.zookeeper</groupId>
+                            <artifactId>zookeeper</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>storm</groupId>
+                    <artifactId>trident-memcached</artifactId>
+                    <version>0.0.2-wip2</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>slf4j-jdk14</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
 
-    <dependencies>
-        <!-- Storm -->
-        <dependency>
-            <groupId>org.apache.storm</groupId>
-            <artifactId>storm-core</artifactId>
-            <version>0.9.2-incubating</version>
-        </dependency>
-        <dependency>
-            <groupId>storm</groupId>
-            <artifactId>storm-kafka</artifactId>
-            <version>0.9.0-wip16a-scala292</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.zookeeper</groupId>
-                    <artifactId>zookeeper</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>storm</groupId>
-            <artifactId>trident-memcached</artifactId>
-            <version>0.0.2-wip2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-jdk14</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+                <!-- Platforms and middlewares -->
+                <dependency>
+                    <groupId>com.twitter</groupId>
+                    <artifactId>kafka_2.9.2</artifactId>
+                    <version>0.7.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                    <version>2.9.2</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.elasticsearch</groupId>
+                    <artifactId>elasticsearch</artifactId>
+                    <version>0.90.3</version>
+                </dependency>
 
-        <!-- Platforms and middlewares -->
-        <dependency>
-            <groupId>com.twitter</groupId>
-            <artifactId>kafka_2.9.2</artifactId>
-            <version>0.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>2.9.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <version>0.90.3</version>
-        </dependency>
+                <!-- To access and parse tweets -->
+                <dependency>
+                    <groupId>org.twitter4j</groupId>
+                    <artifactId>twitter4j-core</artifactId>
+                    <version>3.0.5</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.twitter4j</groupId>
+                    <artifactId>twitter4j-stream</artifactId>
+                    <version>3.0.5</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                    <version>2.1.4</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                    <version>2.1.4</version>
+                </dependency>
 
-        <!-- To access and parse tweets -->
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-core</artifactId>
-            <version>3.0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-stream</artifactId>
-            <version>3.0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.1.4</version>
-        </dependency>
+                <!-- utilities -->
+                <dependency>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                    <version>14.0.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                    <version>3.2.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.codahale.metrics</groupId>
+                    <artifactId>metrics-core</artifactId>
+                    <version>3.0.1</version>
+                </dependency>
 
-        <!-- utilities -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>14.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-core</artifactId>
-            <version>3.0.1</version>
-        </dependency>
+                <!-- test -->
+                <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-all</artifactId>
+                    <version>1.9.5</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
 
-        <!-- test -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+        <profile>
+            <id>cluster</id>
+            <dependencies>
+                <!-- Storm -->
+                <dependency>
+                    <groupId>org.apache.storm</groupId>
+                    <artifactId>storm-core</artifactId>
+                    <version>0.9.2-incubating</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>storm</groupId>
+                    <artifactId>storm-kafka</artifactId>
+                    <version>0.9.0-wip16a-scala292</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.apache.zookeeper</groupId>
+                            <artifactId>zookeeper</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>storm</groupId>
+                    <artifactId>trident-memcached</artifactId>
+                    <version>0.0.2-wip2</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>slf4j-jdk14</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <!-- Platforms and middlewares -->
+                <dependency>
+                    <groupId>com.twitter</groupId>
+                    <artifactId>kafka_2.9.2</artifactId>
+                    <version>0.7.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                    <version>2.9.2</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.elasticsearch</groupId>
+                    <artifactId>elasticsearch</artifactId>
+                    <version>0.90.3</version>
+                </dependency>
+
+                <!-- To access and parse tweets -->
+                <dependency>
+                    <groupId>org.twitter4j</groupId>
+                    <artifactId>twitter4j-core</artifactId>
+                    <version>3.0.5</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.twitter4j</groupId>
+                    <artifactId>twitter4j-stream</artifactId>
+                    <version>3.0.5</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                    <version>2.1.4</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                    <version>2.1.4</version>
+                </dependency>
+
+                <!-- utilities -->
+                <dependency>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                    <version>14.0.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                    <version>3.2.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.codahale.metrics</groupId>
+                    <artifactId>metrics-core</artifactId>
+                    <version>3.0.1</version>
+                </dependency>
+
+                <!-- test -->
+                <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-all</artifactId>
+                    <version>1.9.5</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+    </profiles>
+
 
     <build>
         <plugins>
