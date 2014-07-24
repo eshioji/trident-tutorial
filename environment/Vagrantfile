@@ -34,11 +34,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     nimbus.vm.provision "shell", path: "config-supervisord.sh", args: "ui"
     
     nimbus.vm.provision "shell", path: "config-supervisord.sh", args: "drpc"
-    
+
+    nimbus.vm.provision "shell", path: "config-supervisord.sh", args: "logviewer"
+
     nimbus.vm.provision "shell", path: "start-supervisord.sh"
  
     # Ui   
     nimbus.vm.network "forwarded_port", guest: 8080, host: 8080
+    nimbus.vm.network "forwarded_port", guest: 8000, host: 8000
     
     # DRPC
     nimbus.vm.network "forwarded_port", guest: 3772, host: 3772
