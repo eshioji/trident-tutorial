@@ -19,3 +19,4 @@ target/
 *.iws
 
 environment/.vagrant
+*.swp
