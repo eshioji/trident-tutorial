@@ -20,3 +20,4 @@ target/
 
 environment/.vagrant
 *.swp
+environment/kafkadata
