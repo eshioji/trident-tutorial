@@ -45,6 +45,7 @@ public class TweetIngestor extends AbstractService {
     public TweetIngestor(String kafkaDataDir,String kafkaTopic, int kafkaPort) {
         this.kafkaLocalBroker = new KafkaLocalBroker(kafkaDataDir,kafkaTopic,kafkaPort);
         TwitterStreamFactory fact = new TwitterStreamFactory();
+        checkState(fact.getInstance().getConfiguration().isJSONStoreEnabled(), "Twitter4j JSON store is disabled. You must enabled it in the twitter4j.properties file!");
         stream = fact.getInstance();
         Properties props = new Properties();
         props.put("broker.list", kafkaLocalBroker.localhostBroker);
