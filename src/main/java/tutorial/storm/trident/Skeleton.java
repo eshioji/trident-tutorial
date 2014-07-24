@@ -3,6 +3,7 @@ package tutorial.storm.trident;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.LocalDRPC;
+import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
@@ -36,18 +37,15 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class Skeleton {
     private static final Logger log = LoggerFactory.getLogger(Skeleton.class);
-    public static StormTopology buildTopology(LocalDRPC drpc, TransactionalTridentKafkaSpout spout) throws IOException {
+    public static StormTopology buildTopology(TransactionalTridentKafkaSpout spout) throws IOException {
         TridentTopology topology = new TridentTopology();
         topology
                 .newStream("tweets", spout)
                 .each(new Fields("str"), new Print())
         ;
 
-
         topology
-                .newDRPCStream("fake", drpc)
-                .each(new Fields("args"), new Print())
-        ;
+                .newDRPCStream("ping");
 
         return topology.build();
     }
@@ -56,29 +54,38 @@ public class Skeleton {
     public static void main(String[] args) throws Exception {
         Config conf = new Config();
 
-        LocalDRPC drpc = new LocalDRPC();
-        LocalCluster cluster = new LocalCluster();
 
         String testKafkaBrokerHost;
         if (args.length == 0) {
+            // Executes the topology locally
+
+            // Ready the embedded Kafka broker
             final String tmpFile = "/tmp/"+UUID.randomUUID();
             new File(tmpFile).deleteOnExit();
             TweetIngestor ingestor = new TweetIngestor(tmpFile, "test", 12000);
             ingestor.startAndWait();
             testKafkaBrokerHost = "127.0.0.1:12000";
+
+            // Ready & submit the topology
+            TransactionalTridentKafkaSpout tweetSpout = tweetSpout(testKafkaBrokerHost);
+            LocalCluster cluster = new LocalCluster();
+            cluster.submitTopology("trident-tutorial", conf, buildTopology(tweetSpout));
+
+            while (!Thread.currentThread().isInterrupted()) {
+                Thread.sleep(3000);
+            }
+
         }else{
-            checkArgument(args.length == 1);
-            testKafkaBrokerHost = args[0];
+            // Submits the topology
+            String topologyName = args[0];
+            testKafkaBrokerHost = args[1];
+            conf.setNumWorkers(8); // Our Vagrant environment has 8 workers
+            TransactionalTridentKafkaSpout tweetSpout = tweetSpout(testKafkaBrokerHost);
+            StormSubmitter.submitTopology(topologyName, conf, buildTopology(tweetSpout));
         }
 
-        TransactionalTridentKafkaSpout tweetSpout = tweetSpout(testKafkaBrokerHost);
-        cluster.submitTopology("hackaton", conf, buildTopology(drpc, tweetSpout));
 
 
-        while (!Thread.currentThread().isInterrupted()) {
-            Thread.sleep(3000);
-//            System.out.println(drpc.execute("fake", "test"));
-        }
     }
 
     private static TransactionalTridentKafkaSpout tweetSpout(String testKafkaBrokerHost) {
