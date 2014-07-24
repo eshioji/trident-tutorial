@@ -7,10 +7,10 @@ import org.apache.thrift7.TException;
 /**
  * @author Enno Shioji (eshioji@gmail.com)
  */
-public class DrpcClientExampleForSkeleton {
+public class DrpcTestClient {
     public static void main(String[] args) throws TException, DRPCExecutionException {
         DRPCClient cl = new DRPCClient("localhost",3772, 3000);
-        System.out.println(cl.execute("ping", "a"));
+        System.out.println(cl.execute("count_per_actor", "ted"));
 
     }
 }
