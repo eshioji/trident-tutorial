@@ -14,13 +14,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   if(!File.exist?(STORM_ARCHIVE))
     `wget -N http://mirror.ox.ac.uk/sites/rsync.apache.org/incubator/storm/apache-storm-0.9.2-incubating/apache-storm-0.9.2-incubating.zip`
   end
-  
+
+    config.vm.define "util" do |util|
+      util.vm.box = "precise64"
+      util.vm.network "private_network", ip: "192.168.50.7"
+      util.vm.hostname = "util"
+      util.vm.provision "shell", path: "install-jdk6.sh"
+      
+      util.vm.network "forwarded_port", guest: 12000, host: 12000
+    end
+
+
   config.vm.define "zookeeper" do |zookeeper|
     zookeeper.vm.box = "precise64"
     zookeeper.vm.network "private_network", ip: "192.168.50.3"
     zookeeper.vm.hostname = "zookeeper"
     zookeeper.vm.provision "shell", path: "install-zookeeper.sh"
   end
+
 
   config.vm.define "nimbus" do |nimbus|
     nimbus.vm.box = "precise64"
