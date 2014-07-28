@@ -5,9 +5,6 @@ import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.Timer;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.AbstractService;
-import kafka.javaapi.producer.Producer;
-import kafka.javaapi.producer.ProducerData;
-import kafka.producer.ProducerConfig;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,26 +29,22 @@ public class TweetIngestor extends AbstractService {
         Slf4jReporter.forRegistry(METRIC_REGISTRY).outputTo(log).build().start(15, TimeUnit.SECONDS);
 
     }
-    private final KafkaLocalBroker kafkaLocalBroker;
     private final TwitterStream stream;
-    private final Producer<String, String> producer;
+    private final RemoteKafkaPoster poster;
+    private final String kafkaTopic;
 
     /**
      *
-     * @param kafkaDataDir where Kafka stores its data
+     * @param kafkaHost the host
      * @param kafkaTopic the topic name on which to publish the tweets
      * @param kafkaPort the port for Kafka clients to connect
      */
-    public TweetIngestor(String kafkaDataDir,String kafkaTopic, int kafkaPort) {
-        this.kafkaLocalBroker = new KafkaLocalBroker(kafkaDataDir,kafkaTopic,kafkaPort);
+    public TweetIngestor(String kafkaHost,String kafkaTopic, int kafkaPort) {
         TwitterStreamFactory fact = new TwitterStreamFactory();
         checkState(fact.getInstance().getConfiguration().isJSONStoreEnabled(), "Twitter4j JSON store is disabled. You must enabled it in the twitter4j.properties file!");
         stream = fact.getInstance();
-        Properties props = new Properties();
-        props.put("broker.list", kafkaLocalBroker.localhostBroker);
-        props.put("serializer.class", "kafka.serializer.StringEncoder");
-        ProducerConfig config = new ProducerConfig(props);
-        producer = new Producer<String, String>(config);
+        poster = new RemoteKafkaPoster(METRIC_REGISTRY, kafkaHost, kafkaPort);
+        this.kafkaTopic = kafkaTopic;
     }
 
 
@@ -61,7 +54,6 @@ public class TweetIngestor extends AbstractService {
             @Override
             public void run() {
                 try {
-                    kafkaLocalBroker.startAndWait();
                     StatusAdapter listener = new StatusAdapter() {
                         @Override
                         public void onStatus(Status status) {
@@ -70,8 +62,7 @@ public class TweetIngestor extends AbstractService {
                             if(StringUtils.isEmpty(rawJson)){
                                 return;
                             }
-                            ProducerData<String, String> data = new ProducerData<String, String>(kafkaLocalBroker.topic, rawJson);
-                            producer.send(data);
+                            poster.post(kafkaTopic, rawJson);
                             t.stop();
                         }
 
@@ -104,8 +95,6 @@ public class TweetIngestor extends AbstractService {
             public void run() {
                 try {
                     stream.shutdown();
-                    producer.close();
-                    kafkaLocalBroker.stopAndWait();
                     notifyStopped();
                 } catch (Throwable e) {
                     notifyFailed(e);
@@ -117,10 +106,10 @@ public class TweetIngestor extends AbstractService {
     }
 
     public static void main(String[] args) {
-        checkArgument(args.length > 0 && args.length < 3, "Incorrect arguments. Usage: kafkaLogDir [port]");
-        String logdir = args[0];
+        checkArgument(args.length > 0 && args.length < 3, "Incorrect arguments. Usage: kafkaHost [port]");
+        String kafkahost = args[0];
         int port = args.length == 2 ? Integer.valueOf(args[1]) : 12000;
-        TweetIngestor ingestor = new TweetIngestor(logdir,"test",port);
+        TweetIngestor ingestor = new TweetIngestor(kafkahost,"test",port);
         checkState(State.RUNNING == ingestor.startAndWait());
         log.info("Tweet ingestor started");
 
