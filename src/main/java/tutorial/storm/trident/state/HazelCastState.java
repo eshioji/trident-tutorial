@@ -4,7 +4,6 @@ package tutorial.storm.trident.state;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import org.apache.commons.collections.MapUtils;
 import storm.trident.state.ITupleCollection;
 import storm.trident.state.TransactionalValue;
 import storm.trident.state.map.IBackingMap;
@@ -52,7 +51,7 @@ public class HazelCastState<T> implements IBackingMap<TransactionalValue<T>> {
         List<TransactionalValue<T>> result = new ArrayList<TransactionalValue<T>>(keys.size());
         for (int i = 0; i < keys.size(); i++) {
             String key = getKey(keys.get(i));
-            result.add(new TransactionalValue<T>(0L, (T)(MapUtils.getObject(handler.getState(), key, 0L))));
+            result.add(new TransactionalValue<T>(0L, (T)(handler.getState().get(key))));
         }
         return result;
     }

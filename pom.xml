@@ -66,6 +66,11 @@
             <artifactId>elasticsearch</artifactId>
             <version>0.90.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>3.0</version>
+        </dependency>
 
         <!-- To access and parse tweets -->
         <dependency>

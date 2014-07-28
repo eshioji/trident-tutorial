@@ -23,6 +23,7 @@ import storm.trident.operation.builtin.MapGet;
 import storm.trident.operation.builtin.TupleCollectionGet;
 import storm.trident.testing.MemoryMapState;
 import tutorial.storm.trident.operations.*;
+import tutorial.storm.trident.state.HazelCastStateFactory;
 import tutorial.storm.trident.testutil.TestUtils;
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class TopHashtagFollowerCountGrouping {
                 .each(new Fields("user"), new OnlyEnglish())
                 .each(new Fields("content", "user"), new ExtractFollowerClassAndContentName(), new Fields("followerClass", "contentName"))
                 .groupBy(new Fields("followerClass", "contentName"))
-                .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
+                .persistentAggregate(new HazelCastStateFactory(), new Count(), new Fields("count"))
         ;
 
 
