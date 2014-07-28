@@ -1,7 +1,6 @@
 package tutorial.storm.trident.operations;
 
 import backtype.storm.tuple.Values;
-import org.apache.commons.collections.MapUtils;
 import storm.trident.operation.Aggregator;
 import storm.trident.operation.TridentCollector;
 import storm.trident.operation.TridentOperationContext;
@@ -11,8 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A simple Aggregator that produces a hashmap of key, counts.
- */
+* A simple Aggregator that produces a hashmap of key, counts.
+*/
 public class StringCounter implements Aggregator<Map<String, Integer>> {
 
     private int partitionId;
@@ -36,7 +35,9 @@ public class StringCounter implements Aggregator<Map<String, Integer>> {
     @Override
     public void aggregate(Map<String, Integer> val, TridentTuple tuple, TridentCollector collector) {
         String loc = tuple.getString(0);
-        val.put(loc, MapUtils.getInteger(val, loc, 0) + 1);
+        Integer previousValue = val.get(loc);
+        previousValue = previousValue == null ? 0 : previousValue;
+        val.put(loc, previousValue + 1);
     }
 
     @Override
