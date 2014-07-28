@@ -3,13 +3,16 @@ package tutorial.storm.trident.example;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.LocalDRPC;
+import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import storm.kafka.BrokerHosts;
 import storm.kafka.KafkaConfig;
 import storm.kafka.StringScheme;
+import storm.kafka.ZkHosts;
 import storm.kafka.trident.TransactionalTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
 import storm.trident.TridentState;
@@ -21,19 +24,20 @@ import tutorial.storm.trident.operations.ParseTweet;
 import tutorial.storm.trident.operations.Print;
 import tutorial.storm.trident.operations.Split;
 import tutorial.storm.trident.operations.TweetIdExtractor;
+import tutorial.storm.trident.testutil.TestUtils;
 
 import java.io.IOException;
 
 /**
- * This topology shows how to index on a search engine (ElasticSearch) a stream made of
- * tweets and how to query it, using DRPC calls. This example should be intended as
- * an example of {@link TridentState} custom implementation.
- *
- * @author Davide Palmisano (davide.palmisano@peerindex.com)
- */
+* This topology shows how to index on a search engine (ElasticSearch) a stream made of
+* tweets and how to query it, using DRPC calls. This example should be intended as
+* an example of {@link TridentState} custom implementation.
+*
+* @author Davide Palmisano (davide.palmisano@peerindex.com)
+*/
 public class RealTimeTextSearch {
 
-    public static StormTopology buildTopology(LocalDRPC drpc, TransactionalTridentKafkaSpout spout)
+    public static StormTopology buildTopology(TransactionalTridentKafkaSpout spout)
             throws IOException {
 
         TridentTopology topology = new TridentTopology();
@@ -58,35 +62,29 @@ public class RealTimeTextSearch {
          */
         TridentState elasticSearchState = topology.newStaticState(new ElasticSearchStateFactory());
         topology
-                .newDRPCStream("search", drpc)
+                .newDRPCStream("search")
                 .each(new Fields("args"), new Split(" "), new Fields("keywords")) // let's split the arguments
                 .stateQuery(elasticSearchState, new Fields("keywords"), new TweetQuery(), new Fields("ids")) // and pass them as query parameters
                 .project(new Fields("ids"));
         return topology.build();
     }
 
-    public static void main(String[] args) throws InterruptedException, IOException {
-        Preconditions.checkArgument(args.length == 1, "Please specify the test kafka broker host:port");
-        String testKafkaBrokerHost = args[0];
-        TransactionalTridentKafkaSpout tweetSpout = tweetSpout(testKafkaBrokerHost);
-
+    public static void main(String[] args) throws Exception {
         Config conf = new Config();
 
-        LocalCluster cluster = new LocalCluster();
-        LocalDRPC drpc = new LocalDRPC();
-        cluster.submitTopology("hackaton", conf, buildTopology(drpc, tweetSpout));
 
-        while(!Thread.currentThread().isInterrupted()){
-            Thread.sleep(500);
-            System.out.println(drpc.execute("search","love"));
+        if (args.length == 2) {
+            // Ready & submit the topology
+            String name = args[0];
+            BrokerHosts hosts = new ZkHosts(args[1]);
+            TransactionalTridentKafkaSpout kafkaSpout = TestUtils.testTweetSpout(hosts);
+
+            StormSubmitter.submitTopology(name, conf, buildTopology(kafkaSpout));
+
+        }else{
+            System.err.println("<topologyName> <zookeeperHost>");
         }
-    }
 
-    private static TransactionalTridentKafkaSpout tweetSpout(String testKafkaBrokerHost) {
-        KafkaConfig.BrokerHosts hosts = TridentKafkaConfig.StaticHosts.fromHostString(ImmutableList.of(testKafkaBrokerHost), 1);
-        TridentKafkaConfig config = new TridentKafkaConfig(hosts, "test");
-        config.scheme = new SchemeAsMultiScheme(new StringScheme());
-        return new TransactionalTridentKafkaSpout(config);
     }
 
 }

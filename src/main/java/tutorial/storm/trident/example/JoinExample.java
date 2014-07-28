@@ -2,26 +2,30 @@ package tutorial.storm.trident.example;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
+import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import storm.kafka.BrokerHosts;
 import storm.kafka.KafkaConfig;
 import storm.kafka.StringScheme;
+import storm.kafka.ZkHosts;
 import storm.kafka.trident.TransactionalTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
 import tutorial.storm.trident.operations.*;
+import tutorial.storm.trident.testutil.TestUtils;
 
 import java.io.IOException;
 
 /**
- * This is a really simple example on how do joins between streams with Trident.
- *
- * @author Davide Palmisano (davide.palmisano@peerindex.com)
- */
+* This is a really simple example on how do joins between streams with Trident.
+*
+* @author Davide Palmisano (davide.palmisano@peerindex.com)
+*/
 public class JoinExample {
 
     public static StormTopology buildTopology(TransactionalTridentKafkaSpout spout)
@@ -74,26 +78,21 @@ public class JoinExample {
     }
 
     public static void main(String[] args) throws Exception {
-        Preconditions.checkArgument(args.length == 1, "Please specify the test kafka broker host:port");
-        String testKafkaBrokerHost = args[0];
-
-        TransactionalTridentKafkaSpout tweetSpout = tweetSpout(testKafkaBrokerHost);
-
         Config conf = new Config();
 
-        LocalCluster cluster = new LocalCluster();
-        cluster.submitTopology("hackaton", conf, buildTopology(tweetSpout));
+        if (args.length == 2) {
+            // Ready & submit the topology
+            String name = args[0];
+            BrokerHosts hosts = new ZkHosts(args[1]);
+            TransactionalTridentKafkaSpout kafkaSpout = TestUtils.testTweetSpout(hosts);
 
-        while(!Thread.currentThread().isInterrupted()){
-            Thread.sleep(500);
+            StormSubmitter.submitTopology(name, conf, buildTopology(kafkaSpout));
+
+        }else{
+            System.err.println("<topologyName> <zookeeperHost>");
         }
+
     }
 
-    private static TransactionalTridentKafkaSpout tweetSpout(String testKafkaBrokerHost) {
-        KafkaConfig.BrokerHosts hosts = TridentKafkaConfig.StaticHosts.fromHostString(ImmutableList.of(testKafkaBrokerHost), 1);
-        TridentKafkaConfig config = new TridentKafkaConfig(hosts, "test");
-        config.scheme = new SchemeAsMultiScheme(new StringScheme());
-        return new TransactionalTridentKafkaSpout(config);
-    }
 
 }

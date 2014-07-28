@@ -1,32 +1,20 @@
 package tutorial.storm.trident;
 
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
-import backtype.storm.LocalDRPC;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
-import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import storm.kafka.*;
 import storm.kafka.trident.TransactionalTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
 import storm.trident.TridentTopology;
-import storm.trident.operation.builtin.Count;
-import storm.trident.operation.builtin.FirstN;
-import storm.trident.operation.builtin.MapGet;
-import storm.trident.operation.builtin.TupleCollectionGet;
-import storm.trident.testing.FeederBatchSpout;
-import storm.trident.testing.MemoryMapState;
 import tutorial.storm.trident.operations.*;
-import tutorial.storm.trident.testutil.SampleTweet;
-import tutorial.storm.trident.testutil.TweetIngestor;
+import tutorial.storm.trident.testutil.TestUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -58,9 +46,7 @@ public class Skeleton {
             // Ready & submit the topology
             String name = args[0];
             BrokerHosts hosts = new ZkHosts(args[1]);
-            TridentKafkaConfig kafkaConfig = new TridentKafkaConfig(hosts, "test", "storm");
-            kafkaConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
-            TransactionalTridentKafkaSpout kafkaSpout = new TransactionalTridentKafkaSpout(kafkaConfig);
+            TransactionalTridentKafkaSpout kafkaSpout = TestUtils.testTweetSpout(hosts);
 
             StormSubmitter.submitTopology(name, conf, buildTopology(kafkaSpout));
 
@@ -69,5 +55,6 @@ public class Skeleton {
         }
 
     }
+
 
 }

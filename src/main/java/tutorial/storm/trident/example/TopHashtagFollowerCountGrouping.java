@@ -3,13 +3,16 @@ package tutorial.storm.trident.example;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.LocalDRPC;
+import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import storm.kafka.BrokerHosts;
 import storm.kafka.KafkaConfig;
 import storm.kafka.StringScheme;
+import storm.kafka.ZkHosts;
 import storm.kafka.trident.TransactionalTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
 import storm.trident.TridentState;
@@ -23,15 +26,16 @@ import tutorial.storm.trident.operations.ExtractFollowerClassAndContentName;
 import tutorial.storm.trident.operations.OnlyEnglish;
 import tutorial.storm.trident.operations.OnlyHashtags;
 import tutorial.storm.trident.operations.ParseTweet;
+import tutorial.storm.trident.testutil.TestUtils;
 
 import java.io.IOException;
 
 /**
- * @author Enno Shioji (enno.shioji@peerindex.com)
- */
+* @author Enno Shioji (enno.shioji@peerindex.com)
+*/
 public class TopHashtagFollowerCountGrouping {
 
-    public static StormTopology buildTopology(LocalDRPC drpc, TransactionalTridentKafkaSpout spout) throws IOException {
+    public static StormTopology buildTopology(TransactionalTridentKafkaSpout spout) throws IOException {
 
         TridentTopology topology = new TridentTopology();
         TridentState count =
@@ -48,7 +52,7 @@ public class TopHashtagFollowerCountGrouping {
 
 
         topology
-                .newDRPCStream("hashtag_count", drpc)
+                .newDRPCStream("hashtag_count")
                 .stateQuery(count, new TupleCollectionGet(), new Fields("followerClass", "contentName"))
                 .stateQuery(count, new Fields("followerClass", "contentName"), new MapGet(), new Fields("count"))
                 .groupBy(new Fields("followerClass"))
@@ -59,36 +63,22 @@ public class TopHashtagFollowerCountGrouping {
     }
 
     public static void main(String[] args) throws Exception {
-        Preconditions.checkArgument(args.length == 1, "Please specify the test kafka broker host:port");
-        String testKafkaBrokerHost = args[0];
-
-        TransactionalTridentKafkaSpout tweetSpout = tweetSpout(testKafkaBrokerHost);
-
         Config conf = new Config();
 
-        LocalDRPC drpc = new LocalDRPC();
-        LocalCluster cluster = new LocalCluster();
-        // For unit testing
-        // FeederBatchSpout feederSpout = new FeederBatchSpout(ImmutableList.of("str"));
-        // SampleTweet sampleTweet = new SampleTweet();
-        // feederSpout.feed(ImmutableList.of(new Values(sampleTweet.sampleTweet())));
+        if (args.length == 2) {
+            // Ready & submit the topology
+            String name = args[0];
+            BrokerHosts hosts = new ZkHosts(args[1]);
+            TransactionalTridentKafkaSpout kafkaSpout = TestUtils.testTweetSpout(hosts);
 
-        cluster.submitTopology("hackaton", conf, buildTopology(drpc,tweetSpout));
+            StormSubmitter.submitTopology(name, conf, buildTopology(kafkaSpout));
 
-        while(!Thread.currentThread().isInterrupted()){
-            Thread.sleep(500);
-            System.out.println(drpc.execute("hashtag_count",""));
+        }else{
+            System.err.println("<topologyName> <zookeeperHost>");
         }
+
     }
 
-    private static TransactionalTridentKafkaSpout tweetSpout(String testKafkaBrokerHost) {
-        // For locally starting the kafka broker
-        // TweetIngestor ingestor = new TweetIngestor("/tmp/kafka", "test", 12000);
-        // ingestor.startAndWait();
-        KafkaConfig.BrokerHosts hosts = TridentKafkaConfig.StaticHosts.fromHostString(ImmutableList.of(testKafkaBrokerHost), 1);
-        TridentKafkaConfig config = new TridentKafkaConfig(hosts, "test");
-        config.scheme = new SchemeAsMultiScheme(new StringScheme());
-        return new TransactionalTridentKafkaSpout(config);
-    }
+
 
 }
