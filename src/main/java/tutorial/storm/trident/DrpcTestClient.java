@@ -10,7 +10,13 @@ import org.apache.thrift7.TException;
 public class DrpcTestClient {
     public static void main(String[] args) throws TException, DRPCExecutionException {
         DRPCClient cl = new DRPCClient("localhost",3772, 3000);
-        System.out.println(cl.execute("ping", "ted"));
+        if (args.length != 2){
+            System.err.println("<functionName> <arguments>");
+        }else{
+            String func = args[0];
+            String argument = args[1];
+            System.out.println(cl.execute(func, argument));
+        }
 
     }
 }
