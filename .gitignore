@@ -21,3 +21,4 @@ target/
 environment/.vagrant
 *.swp
 environment/kafkadata
+environment/apache-storm-0.9.2-incubating
