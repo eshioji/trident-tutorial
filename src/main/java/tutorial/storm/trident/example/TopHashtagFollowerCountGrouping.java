@@ -22,10 +22,7 @@ import storm.trident.operation.builtin.FirstN;
 import storm.trident.operation.builtin.MapGet;
 import storm.trident.operation.builtin.TupleCollectionGet;
 import storm.trident.testing.MemoryMapState;
-import tutorial.storm.trident.operations.ExtractFollowerClassAndContentName;
-import tutorial.storm.trident.operations.OnlyEnglish;
-import tutorial.storm.trident.operations.OnlyHashtags;
-import tutorial.storm.trident.operations.ParseTweet;
+import tutorial.storm.trident.operations.*;
 import tutorial.storm.trident.testutil.TestUtils;
 
 import java.io.IOException;
@@ -53,10 +50,8 @@ public class TopHashtagFollowerCountGrouping {
 
         topology
                 .newDRPCStream("hashtag_count")
-                .stateQuery(count, new TupleCollectionGet(), new Fields("followerClass", "contentName"))
-                .stateQuery(count, new Fields("followerClass", "contentName"), new MapGet(), new Fields("count"))
-                .groupBy(new Fields("followerClass"))
-                .aggregate(new Fields("contentName", "count"), new FirstN.FirstNSortedAgg(1,"count", true), new Fields("contentName", "count"))
+                .each(new Constants<String>("< 100", "< 10K", "< 100K", ">= 100K"), new Fields("followerClass"))
+                .stateQuery(count, new Fields("followerClass", "args"), new MapGet(), new Fields("count"))
         ;
 
         return topology.build();
