@@ -19,9 +19,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       util.vm.box = "precise64"
       util.vm.network "private_network", ip: "192.168.50.7"
       util.vm.hostname = "util"
-      util.vm.provision "shell", path: "install-jdk6.sh"
+      util.vm.provision "shell", path: "install-kafka.sh"
       
       util.vm.network "forwarded_port", guest: 12000, host: 12000
+      util.vm.network "forwarded_port", guest: 9092, host: 9092
     end
 
 
@@ -30,6 +31,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     zookeeper.vm.network "private_network", ip: "192.168.50.3"
     zookeeper.vm.hostname = "zookeeper"
     zookeeper.vm.provision "shell", path: "install-zookeeper.sh"
+
+    zookeeper.vm.network "forwarded_port", guest: 2181, host: 2181
   end
 
 
