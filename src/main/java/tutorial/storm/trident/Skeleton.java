@@ -37,14 +37,15 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class Skeleton {
     private static final Logger log = LoggerFactory.getLogger(Skeleton.class);
-
-
     public static StormTopology buildTopology(TransactionalTridentKafkaSpout spout) throws IOException {
         TridentTopology topology = new TridentTopology();
         topology
                 .newStream("tweets", spout)
                 .each(new Fields("str"), new Print())
         ;
+
+        topology
+                .newDRPCStream("ping");
 
         return topology.build();
     }
@@ -74,16 +75,7 @@ public class Skeleton {
                 Thread.sleep(3000);
             }
 
-        }else if (args.length == 1) {
-            // Ready & submit the topology
-            TransactionalTridentKafkaSpout tweetSpout = tweetSpout(args[0]);
-            LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology("trident-tutorial", conf, buildTopology(tweetSpout));
-
-            while (!Thread.currentThread().isInterrupted()) {
-                Thread.sleep(3000);
-            }
-        } else{
+        }else{
             // Submits the topology
             String topologyName = args[0];
             testKafkaBrokerHost = args[1];
