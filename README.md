@@ -77,17 +77,14 @@ You can list the vagrant VMs as follows:
 $ vagrant status
 Current machine states:
 
+util                      running (virtualbox)
 zookeeper                 running (virtualbox)
 nimbus                    running (virtualbox)
 supervisor1               running (virtualbox)
 supervisor2               running (virtualbox)
-
-This environment represents multiple VMs. The VMs are all listed
-above with their current state. For more information about a specific
-VM, run `vagrant status NAME`.
 ```
 
-The vagrant configuration file is configured to forward standard nimbus, ui, and drpc ports on the host machine (i.e. your machine) to the appropriate guest VMs, so you can look at Storm UI on by simply navigating to `http://localhost:8080` as well as interact with it with its client scripts. You can ssh into these machines by doing e.g. `vagrant ssh nimbus` and take a look. Storm components are run by the `storm` user.
+The vagrant configuration file is configured to forward standard storm/kafka/zookeeper ports from the host machine (i.e. your machine) to the appropriate guest VM, so that you can e.g. look at Storm UI by simply navigating to `http://localhost:8080`. You can ssh into these machines by doing e.g. `vagrant ssh nimbus` and take a look. Storm components are run by the `storm` user.
 
 
 [5]:http://www.vagrantup.com/
