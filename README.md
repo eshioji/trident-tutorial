@@ -3,12 +3,13 @@ trident-tutorial
 
 A practical Storm Trident tutorial
 
-This tutorial builds on [Pere Ferrera][1]'s excellent [material][2] for the [Trident hackaton@Big Data Beers #4 in Berlin][3]. The vagrant setup is based on Taylor Goetz's [contribution][6].
+This tutorial builds on [Pere Ferrera][1]'s excellent [material][2] for the [Trident hackaton@Big Data Beers #4 in Berlin][3]. The vagrant setup is based on Taylor Goetz's [contribution][6]. The Hazelcast state code is based on wurstmeister's [code][7].
 
 [1]:https://github.com/pereferrera
 [2]:https://github.com/pereferrera/trident-hackaton
 [3]:http://www.meetup.com/Big-Data-Beers/events/112226662/
 [6]:https://github.com/ptgoetz/storm-vagrant
+[7]:https://github.com/wurstmeister/storm-kafka-0.8-plus-test
 
 Have a look at the accompanying [slides][4] as well.
 
