@@ -62,6 +62,7 @@ public class TopHashtagFollowerCountGrouping {
 
     public static void main(String[] args) throws Exception {
         Config conf = new Config();
+        conf.setNumWorkers(6);
 
         if (args.length == 2) {
             // Ready & submit the topology
