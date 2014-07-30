@@ -5,6 +5,7 @@ import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.Timer;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.AbstractService;
+import com.google.common.util.concurrent.RateLimiter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,13 @@ public class TweetIngestor extends AbstractService {
     private static final MetricRegistry METRIC_REGISTRY = new MetricRegistry();
     static{
         Slf4jReporter.forRegistry(METRIC_REGISTRY).outputTo(log).build().start(15, TimeUnit.SECONDS);
-
     }
+
+    private final RateLimiter rateLimiter;
     private final TwitterStream stream;
     private final RemoteKafkaPoster poster;
     private final String kafkaTopic;
+    private final String track;
 
     /**
      *
@@ -39,12 +42,14 @@ public class TweetIngestor extends AbstractService {
      * @param kafkaTopic the topic name on which to publish the tweets
      * @param kafkaPort the port for Kafka clients to connect
      */
-    public TweetIngestor(String kafkaHost,String kafkaTopic, int kafkaPort) {
+    public TweetIngestor(String kafkaHost,String kafkaTopic, int kafkaPort, String track, double tweetRate) {
         TwitterStreamFactory fact = new TwitterStreamFactory();
         checkState(fact.getInstance().getConfiguration().isJSONStoreEnabled(), "Twitter4j JSON store is disabled. You must enabled it in the twitter4j.properties file!");
         stream = fact.getInstance();
         poster = new RemoteKafkaPoster(METRIC_REGISTRY, kafkaHost, kafkaPort);
         this.kafkaTopic = kafkaTopic;
+        this.rateLimiter = RateLimiter.create(tweetRate);
+        this.track = track;
     }
 
 
@@ -57,13 +62,17 @@ public class TweetIngestor extends AbstractService {
                     StatusAdapter listener = new StatusAdapter() {
                         @Override
                         public void onStatus(Status status) {
-                            Timer.Context t = METRIC_REGISTRY.timer("tweet-ingestion").time();
-                            String rawJson = DataObjectFactory.getRawJSON(status);
-                            if(StringUtils.isEmpty(rawJson)){
-                                return;
+                            if(rateLimiter.tryAcquire()) {
+                                Timer.Context t = METRIC_REGISTRY.timer("tweet-ingestion").time();
+                                String rawJson = DataObjectFactory.getRawJSON(status);
+                                if (StringUtils.isEmpty(rawJson)) {
+                                    return;
+                                }
+                                poster.post(kafkaTopic, rawJson);
+                                t.stop();
+                            }else{
+                                // Throwing away tweets!
                             }
-                            poster.post(kafkaTopic, rawJson);
-                            t.stop();
                         }
 
                         @Override
@@ -78,7 +87,9 @@ public class TweetIngestor extends AbstractService {
                     };
 
                     stream.addListener(listener);
-                    stream.sample();
+                    FilterQuery fq = new FilterQuery();
+                    fq.track(new String[]{ track });
+                    stream.filter(fq);
                     notifyStarted();
                 } catch (Throwable e) {
                     notifyFailed(e);
@@ -106,10 +117,13 @@ public class TweetIngestor extends AbstractService {
     }
 
     public static void main(String[] args) {
-        checkArgument(args.length > 0 && args.length < 3, "Incorrect arguments. Usage: kafkaHost [port]");
+        checkArgument(args.length == 4, "Incorrect arguments. Usage: kafkaHost port trackKeyword tweetRate");
         String kafkahost = args[0];
-        int port = args.length == 2 ? Integer.valueOf(args[1]) : 12000;
-        TweetIngestor ingestor = new TweetIngestor(kafkahost,"test",port);
+        int port = Integer.valueOf(args[1]);
+        String track = args[2];
+        double tweetRate = Double.valueOf(args[3]);
+
+        TweetIngestor ingestor = new TweetIngestor(kafkahost, "test", port, track, tweetRate);
         checkState(State.RUNNING == ingestor.startAndWait());
         log.info("Tweet ingestor started");
 
