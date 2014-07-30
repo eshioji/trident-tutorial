@@ -100,3 +100,19 @@ Then, start the Kafka server in the background
 ```
 sudo /bin/su - kafka -c "/usr/share/kafka_2.8.0-0.8.1.1/bin/kafka-server-start.sh -daemon /usr/share/kafka_2.8.0-0.8.1.1/config/server.properties"
 ```
+### Start the Tweet Ingestor
+Get Twitter API tokens at https://dev.twitter.com  
+Copy `./src/main/resources/twitter4j.properties.template` as `twitter4j.properties` in the same directory, and replace `********` with your actual token/secret etc. Once you've done that, execute `tutorial.storm.trident.testutil.TweetIngestor localhost 9092 1.0`. The process will connect to Twitter and post the Tweets to the Kafka broker through the port-forwarding we set up on 9092. The last argument `1.0` will limit the number of Tweets that will be posted to 1.0/second in order to not overload our small virtual cluster! 
+
+If you see something like this in the logs, it's working ok
+```
+660391 [metrics-logger-reporter-thread-1] INFO  tutorial.storm.trident.testutil.TweetIngestor - type=TIMER, name=tweet-ingestion, count=33386, min=0.054, max=1.0779999999999998, mean=0.1831284046692607, stddev=0.09167078947103646, median=0.16699999999999998, p75=0.215, p95=0.3150999999999999, p98=0.46509999999999974, p99=0.5769400000000005, p999=1.0721420000000006, mean_rate=50.751326369025925, m1=50.833859244762294, m5=51.93631323103864, m15=52.897234973285414, rate_unit=events/second, duration_unit=milliseconds
+```
+
+### Build and deploy the example topology
+Build a job jar like so:
+```
+mvn clean package -DskipTests -Pcluster
+```
+
+
