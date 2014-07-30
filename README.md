@@ -67,7 +67,7 @@ java -cp target/trident-tutorial-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
 You can simulate a multi-machine Storm cluster on your local machine. To do this, first install [vagrant][5]. Then, install its host manager plugin by executing
 
 ```
-$ vagrant plugin install host-manager
+$ vagrant plugin install vagrant-hostmanager
 ```  
 
 Finally, go to `./environment` and execute `vagrant up`. It will take a while to download necessary resources, and you will be asked for root password as it edits the host file.
