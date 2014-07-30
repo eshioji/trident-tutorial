@@ -88,3 +88,15 @@ The vagrant configuration file is configured to forward standard storm/kafka/zoo
 
 
 [5]:http://www.vagrantup.com/
+
+
+## Running example topologies on the Storm cluster
+### Start the Kafka server
+Currently you have to start the Kafka server manually. To do so, ssh into the `util` server like so:
+```
+vagrant ssh util
+```
+Then, start the Kafka server in the background
+```
+sudo /bin/su - kafka -c "/usr/share/kafka_2.8.0-0.8.1.1/bin/kafka-server-start.sh -daemon /usr/share/kafka_2.8.0-0.8.1.1/config/server.properties"
+```
