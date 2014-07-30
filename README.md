@@ -102,7 +102,7 @@ sudo /bin/su - kafka -c "/usr/share/kafka_2.8.0-0.8.1.1/bin/kafka-server-start.s
 ```
 ### Start the Tweet Ingestor
 Get Twitter API tokens at https://dev.twitter.com  
-Copy `./src/main/resources/twitter4j.properties.template` as `twitter4j.properties` in the same directory, and replace `********` with your actual token/secret etc. Once you've done that, execute `tutorial.storm.trident.testutil.TweetIngestor localhost 9092`. The process will connect to Twitter and post the Tweets to the Kafka broker through the port-forwarding we set up on 9092.
+Copy `./src/main/resources/twitter4j.properties.template` as `twitter4j.properties` in the same directory, and replace `********` with your actual token/secret etc. Once you've done that, execute `tutorial.storm.trident.testutil.TweetIngestor localhost 9092 1.0`. The process will connect to Twitter and post the Tweets to the Kafka broker through the port-forwarding we set up on 9092. The last argument `1.0` will limit the number of Tweets that will be posted to 1.0/second in order to not overload our small virtual cluster! 
 
 If you see something like this in the logs, it's working ok
 ```
