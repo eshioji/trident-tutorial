@@ -44,8 +44,10 @@ public class TopHashtagFollowerCountGrouping {
                 .each(new Fields("content"), new OnlyHashtags())
                 .each(new Fields("user"), new OnlyEnglish())
                 .each(new Fields("content", "user"), new ExtractFollowerClassAndContentName(), new Fields("followerClass", "contentName"))
+                .parallelismHint(3)
                 .groupBy(new Fields("followerClass", "contentName"))
                 .persistentAggregate(new HazelCastStateFactory(), new Count(), new Fields("count"))
+                .parallelismHint(3)
         ;
 
 
