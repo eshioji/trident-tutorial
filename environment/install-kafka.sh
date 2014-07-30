@@ -11,4 +11,3 @@ ln -s /usr/share/kafka_2.8.0-0.8.1.1 /usr/share/kafka
 
 sed -i 's/zookeeper.connect=localhost:2181/zookeeper.connect=192.168.50.3:2181/' /usr/share/kafka_2.8.0-0.8.1.1/config/server.properties
 
-sudo /bin/su - kafka -c "/usr/share/kafka_2.8.0-0.8.1.1/bin/kafka-server-start.sh -daemon /usr/share/kafka_2.8.0-0.8.1.1/config/server.properties"
