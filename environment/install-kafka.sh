@@ -1,6 +1,6 @@
 apt-get update
 apt-get install -y unzip  openjdk-6-jdk wget git
-wget -q http://mirror.gopotato.co.uk/apache/kafka/0.8.1.1/kafka_2.8.0-0.8.1.1.tgz -O /tmp/kafka_2.8.0-0.8.1.1.tgz
+wget -q http://mirror.catn.com/pub/apache/kafka/0.8.1.1/kafka_2.8.0-0.8.1.1.tgz -O /tmp/kafka_2.8.0-0.8.1.1.tgz
 tar xfz /tmp/kafka_2.8.0-0.8.1.1.tgz -C /usr/share
 
 groupadd kafka
